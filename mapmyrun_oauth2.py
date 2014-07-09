@@ -17,6 +17,7 @@ def homepage():
 
 @app.route('/callback')
 def callback():
+    print "IN THE CALLBACK FUNCTION"
     error=request.args.get('error', '')
     if error:
         return "Error: " + error
@@ -25,11 +26,12 @@ def callback():
         # if request was not started by me
         abort(403)
     code = request.args.get('code')
-    #return "got a code! %s" % code
-    return 'got an access token! %s' % get_token(code)
+    return "got a code! %s" % code
+    #return 'got an access token! %s' % get_token(code)'''
     
 
 def make_authorization_url():
+    print "IN MAKE_ATHORIZATION_URL FUNCTION"
     # Generate a random string for the state parameter
     # Save it for use later to prevent xsrf attacks
     from uuid import uuid4
@@ -45,9 +47,10 @@ def make_authorization_url():
     import urllib
     #url = "https://www.mapmyfitness.com/v7.0/oauth2/authorize/?" + urllib.urlencode(params) #original URL in this example
     url = 'https://www.mapmyfitness.com/v7.0/oauth2/authorize/?client_id=%s&response_type=code&redirect_uri=%s' % (CLIENT_ID, REDIRECT_URI) #pulled from map my run oauth 2 example
+    print "THIS IS THE URL: " , url
     return url
 
-def get_token(code):
+'''def get_token(code):
     client_auth = requests.auth.HTTPBasicAuth(CLIENT_ID, CLIENT_SECRET)
     print "This is client_auth: " , client_auth
     post_data = {"grant_type": "client_credentials",
@@ -60,16 +63,18 @@ def get_token(code):
     print "This is the response: " , response
     token_json = response.json()
     print "This is the token_json: ", token_json
-    return token_json["access_token"]
+    return token_json["access_token"]'''
 
-#code pulled from MapMyRun oauth2 example
-'''# Get an Access Token by calling the MapMyFitness access token endpoint with the Authorization Code and your application's client ID and secret
+'''#code pulled from MapMyRun oauth2 example
+# Get an Access Token by calling the MapMyFitness access token endpoint with the Authorization Code and your application's client ID and secret
 def get_token(code):
+    print "IN THE GET_TOKEN FUNCTION NOW"
     access_token_url = 'https://oauth2-api.mapmyapi.com/v7.0/oauth2/access_token/'
-    access_token_data = {'grant_type': 'authorization_code',
+    access_token_data = {'grant_type': 'client_credentials',
                          'client_id': CLIENT_ID,
-                         'client_secret': client_secret,
+                         'client_secret': CLIENT_SECRET,
                          'code': authorize_code}
+    print "This is the access token data: " , access_token_data
     response = requests.post(url=access_token_url,
                              data=access_token_data,
                              headers={'Api-Key': CLIENT_ID})
@@ -93,4 +98,4 @@ def is_valid_state(state):
 
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5001)#
+    app.run(debug=True, port=5001)
