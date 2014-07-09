@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
 from flask import Flask, abort, request, render_template
-from mapmyfitness import MapMyFitness
 import requests
 import requests.auth
 
@@ -31,14 +30,6 @@ def callback():
     print "THIS IS THE code: " , code
     #return "got a code! %s" % code
     return 'got an access token! %s' % get_token(code)
-
-@app.route('/route')
-def display_route():
-    close_to_location = (37.7919584, -122.2287941)
-    maximum_distance = 1000
-    minimum_distance = 1
-    request_uri = "https://oauth2-api.mapmyapi.com/v7.0/route/?close_to_location=37.7919584%2C+-122.2287941&maximum_distance=1000&minimum_distance=1"
-
 
 def make_authorization_url():
     print "IN MAKE_ATHORIZATION_URL FUNCTION"    
