@@ -9,7 +9,7 @@ CLIENT_ID = "hhp3ye7mq97jnuz8rxfzwc3fz39ef3rp"
 CLIENT_SECRET = "rcZHsyFknu4WA47AyDgJtagveHw479rUhnKX2qhj3dm"
 REDIRECT_URI = "http://localhost.mapmyapi.com:5001/callback"
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='')
 
 @app.route('/')
 def homepage():

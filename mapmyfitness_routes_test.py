@@ -14,22 +14,35 @@ mmf = MapMyFitness(api_key='hhp3ye7mq97jnuz8rxfzwc3fz39ef3rp',
 def homepage():
     return render_template("index.html")
 
+#print(route.id)
+#print(route.name)
+#print(route.description)
+#print(route.privacy)
+#print(route.distance)
+#print(route.ascent)
+#print(route.descent)
+#print(route.min_elevation)
+#print(route.max_elevation)
+#print(route.city)
+#print(route.state)
+#print(route.country)
+#print(route.created_datetime)
+#print(route.updated_datetime)
+
+@app.route('/route')
+def plot_route():
+    route = mmf.route.find(348949363)
+    route_points = route.points()
+    one_point = route_points[0]
+    lat = one_point.get('lat')
+    lng = one_point.get('lng')
+    for route in route_points:
+        pass
+    return render_template("index.html", lat=lat, lng=lng)
+    
+
+
 #routes_paginator = mmf.route.search(close_to_location=[35.555, -80.934], minimum_distance=9000, maximum_distance=11000)
-route = mmf.route.find(348949363)
-print(route.id)
-print(route.name)
-print(route.description)
-print(route.privacy)
-print(route.distance)
-print(route.ascent)
-print(route.descent)
-print(route.min_elevation)
-print(route.max_elevation)
-print(route.city)
-print(route.state)
-print(route.country)
-print(route.created_datetime)
-print(route.updated_datetime)
 
 if __name__ == '__main__':
     app.run(debug=True, port=5001)
