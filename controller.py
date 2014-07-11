@@ -18,10 +18,10 @@ def homepage():
                     u'expires_in': 5182593,
                     u'scope': u'read'} #hard code access_token in for now
     if access_token:
-        return render_template("index.html")
+        return render_template("new_index.html")
     else:
         make_authorization_url()
-        return render_template("index.html")
+        return render_template("new_index.html")
 
 
 @app.route('/callback')

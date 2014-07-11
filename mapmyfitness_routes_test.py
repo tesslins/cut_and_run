@@ -1,46 +1,25 @@
 #!/usr/bin/env python
-from flask import Flask, abort, request, render_template
+from flask import Flask, abort, request, render_template, jsonify
 from mapmyfitness import MapMyFitness
 import requests
 import requests.auth
+import json
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='')
 
 
 mmf = MapMyFitness(api_key='hhp3ye7mq97jnuz8rxfzwc3fz39ef3rp',
-                   access_token='501883a24f7f7be9fe96d9f9909776dc44a1d37c')
+                   access_token='4636bdf2cb0b82b456a855808925c42b67cab7ae')
 
 @app.route('/')
 def homepage():
-    return render_template("index.html")
-
-#print(route.id)
-#print(route.name)
-#print(route.description)
-#print(route.privacy)
-#print(route.distance)
-#print(route.ascent)
-#print(route.descent)
-#print(route.min_elevation)
-#print(route.max_elevation)
-#print(route.city)
-#print(route.state)
-#print(route.country)
-#print(route.created_datetime)
-#print(route.updated_datetime)
+    return render_template("new_index_copy.html")
 
 @app.route('/route')
 def plot_route():
-    route = mmf.route.find(348949363)
-    route_points = route.points()
-    one_point = route_points[0]
-    lat = one_point.get('lat')
-    lng = one_point.get('lng')
-    for route in route_points:
-        pass
-    return render_template("index.html", lat=lat, lng=lng)
-    
-
+    #route = mmf.route.find(348949363)  # search for route by ID
+    #route_points = route.points(geojson=True)  # .points() method to get all route points as geoJSON
+    return render_template("new_index_copy.html")
 
 #routes_paginator = mmf.route.search(close_to_location=[35.555, -80.934], minimum_distance=9000, maximum_distance=11000)
 
