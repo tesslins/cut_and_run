@@ -2,16 +2,29 @@
   <html>
     <head>
       {% block head %}
-      <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
-      <meta charset="utf-8">
+      <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+      <meta charset="utf-8" />
       <link rel="stylesheet" href="css/style.css" />
       <title>{% block title %}base{% endblock %}</title>
-      <script type='text/javascript' src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
+      <!-- Google Maps & Places API -->
+      <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?libraries=places&sensor=false"></script>
+      <!-- jQuery -->
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
       {%block head_js %}
+      <script type='text/javascript' src="js/initialize_map.js"></script>
       {% endblock %}
       {% endblock %}
   </head>
-  <body>
-    <div id="map-canvas"></div>
+  <body onload="runAround.initialize()">
+    <div style="position:absolute; width:380px; height: 100%; overflow:auto; float:left; padding-left:10px; padding-right:10px;">
+      <h1>search me</h1>
+        <!-- zip code search box -->
+        <div style="border:1px solid #ccc; background:#e5e5e5; padding:10px;">
+            <input type="text" id="address">
+            <input type="button" value="find" onclick="runAround.geocode()">
+        </div>
+    </div> 
+    </div>
+    <div id="map-canvas" style="height:100%; margin-left:400px;"></div>
   </body>
   </html>

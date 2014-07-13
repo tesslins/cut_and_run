@@ -22,17 +22,17 @@ def homepage():
 def plot_route():
     '''Search for a route by ID, get points as lat/lng tuples, turn into a geoJSON of lat/lng lists.'''
     route = mmf.route.find(348949363) 
-    route_points = route.points(geojson=True)
+    route_points = route.points(geojson=True) #this does not actually create a geoJSON...booo
     lat_lng_tuples = route_points['coordinates'] 
     lat_lng_lists = [list(point) for point in lat_lng_tuples] 
     route_points['coordinates'] = lat_lng_lists
     return render_template("route.html", route_points=route_points)
 
-@app.route('/route_search')
-def search_route(lat_lng):
-    '''Search for all routes near Oakland with min & max distance.'''
-    routes_paginator = mmf.route.search(close_to_location=lat_lng)
-    return render_template("index_v2.html")
+#@app.route('/route_search')
+#def search_route(lat_lng):
+#    '''Search for all routes near latitute-longitude. The close_to_location search query does not work, why???? Pls help me Jason Sanford!'''
+#    routes_paginator = mmf.route.search(close_to_location=[lat_lng])
+#    return render_template("index_v2.html")
 
 if __name__ == '__main__':
     app.run(debug=True, port=5001)
