@@ -17,10 +17,10 @@ def homepage():
                     u'expires_in': 5182593,
                     u'scope': u'read'} #hard code access_token in for now
     if access_token:
-        return render_template("index.html")
+        return render_template("new_index_copy.html")
     else:
         make_authorization_url()
-        return render_template("index.html")
+        return render_template("new_index_copy.html")
 
 
 @app.route('/callback')
@@ -38,7 +38,7 @@ def make_authorization_url():
     return url
     
 def get_token(code):
-    print "IN THE GET_TOKEN FUNCTION NOW"
+    print "IN THE get_token FUNCTION NOW"
     access_token_url = 'https://oauth2-api.mapmyapi.com/v7.0/oauth2/access_token/'
     access_token_data = {'grant_type': 'client_credentials',
                          'client_id': CLIENT_ID,
@@ -58,7 +58,6 @@ def get_token(code):
     access_token = response.json()
     access_token
     print "THIS IS THE access_token: " , access_token
-
     
 if __name__ == '__main__':
     app.run(debug=True, port=5001)
