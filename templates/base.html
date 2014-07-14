@@ -8,23 +8,25 @@
       <title>{% block title %}base{% endblock %}</title>
       <!-- Google Maps & Places API -->
       <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?libraries=places&sensor=false"></script>
-      <!-- jQuery -->
+      <!-- jQuery: need to also add script for static jQuery just in case?! --> 
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
       {%block head_js %}
       <script type='text/javascript' src="js/initialize_map.js"></script>
       {% endblock %}
       {% endblock %}
-  </head>
-  <body onload="runAround.initialize()">
-    <div style="position:absolute; width:380px; height: 100%; overflow:auto; float:left; padding-left:10px; padding-right:10px;">
-      <h1>search me</h1>
-        <!-- zip code search box -->
-        <div style="border:1px solid #ccc; background:#e5e5e5; padding:10px;">
-            <input type="text" id="address">
-            <input type="button" value="find" onclick="runAround.geocode()">
-        </div>
-    </div> 
-    </div>
-    <div id="map-canvas" style="height:100%; margin-left:400px;"></div>
-  </body>
+    </head>
+    <body onload="runAround.initialize()">
+      <div style="position:absolute; width:220px; height: 100%; overflow:auto; float:left; padding-left:10px; padding-right:10px;">
+        <h1>search up in hurr</h1>
+          <!-- zip code search box up in hurrr -->
+          <div style="background:#e5e5e5; padding:10px;">
+            <input type="text" placeholder="zip code" id="address">
+            <input type="text" placeholder="minimum distance" id="min_distance"><label for="min_distance">meters</label>
+            <input type="text" placeholder="maximum distance" id="max_distance"><label for="min_distance">meters</label>
+            <input type="button" value="find a route" onclick="runAround.geocode()">
+          </div>
+      </div> 
+      </div>
+      <div id="map-canvas" style="height:100%; margin-left:240px;"></div>
+    </body>
   </html>

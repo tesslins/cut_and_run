@@ -15,9 +15,9 @@ function trace(message)
 
 // Create the map.
 runAround.initialize = function() {
-  var latlng = new google.maps.LatLng(39.7392,-104.9847);
+  var latlng = new google.maps.LatLng(37.8,-122.2);
   var mapOptions = {
-    zoom: 8,
+    zoom: 12,
     center: latlng,
     mapTypeId: google.maps.MapTypeId.TERRAIN 
   };
@@ -33,10 +33,11 @@ runAround.geocode = function()
       if (status == google.maps.GeocoderStatus.OK) 
       {
           map.setCenter(results[0].geometry.location);
-          var marker = new google.maps.Marker({
-              map: map, 
-              position: results[0].geometry.location
-          });
+          // This places a marker in the center, don't want it.
+          //var marker = new google.maps.Marker({
+          //    map: map, 
+          //    position: results[0].geometry.location
+          //});
       } 
       else 
       {
