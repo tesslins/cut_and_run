@@ -4,6 +4,7 @@ from mapmyfitness import MapMyFitness
 import requests
 import requests.auth
 import json
+import geojson
 
 app = Flask(__name__, static_url_path='') #what is static_url_path ?
 
@@ -19,17 +20,17 @@ def homepage():
 @app.route('/route')
 def search_route():
     '''Search for all routes near latitute-longitude, maximum and minimum distance are optional. Distances currently in meters and  default to minimum of 1 mile (1609 meters) and 10 miles (16093 meters). '''
-    print "IN THE search_route FUNCTION********************"
-    lat_lng = request.args.get('latlng') #add check here - request lat_long to continue if none is entered
-    print "This is the lat_lng" , lat_lng
+    print "*****search_route function******"
+    lat = request.args.get('lat')
+    lng = request.args.get('lng')
+    lat_lng = []
+    lat_lng.append(lat)
+    lat_lng.append(lng)
     min_distance = request.args.get('minDistance', 1609, type=int)
-    print "This is the minimum distance" , min_distance
     max_distance = request.args.get('maxDistance', 16093, type=int)
-    print "This is the maximum distance" , max_distance
     routes_paginator = mmf.route.search(close_to_location=lat_lng,
                                         minimum_distance=min_distance,
                                         maximum_distance=max_distance)
-    print "THIS IS THE routes_paginator" , routes_pagniator
     page_range = routes_paginator.page_range
     if len(page_range) > 0:
         route_list = []
@@ -41,17 +42,18 @@ def search_route():
         print "Warning! Page_range length is: " , page_range
 
 def render_route(route_list):
-    print "IN THE render_route FUNCTION**********************"
+    print "*****render_route function******"
     '''Search for a route by ID, get points as lat/lng tuples, turn into a geoJSON of lat/lng lists.'''
     i = 0
-    for route[i] in route_list:
-        route = mmf.route.find(route.id)
-        route_points = route.points(geojson=True) #this ALMOST creates a geoJSON, requires the next 3 lines
-        lat_lng_tuples = route_points['coordinates']
-        lat_lng_lists = [list(point) for point in lat_lng_tuples]
-        route_points['coordinates'] = lat_lng_lists
-        return route_points
-        #i += 1 #need to figure looping through route in response to click on "no" on map page
+    #for route in route_list:
+    route_object = route_list[i]
+    route_points = route_object.points(geojson=True) #this ALMOST creates a geoJSON, requires the next 3 lines to actually get to geoJson format
+    lat_lng_tuples = route_points['coordinates']
+    lat_lng_lists = [list(point) for point in lat_lng_tuples]
+    route_points['coordinates'] = lat_lng_lists
+    print geojson.dumps(route_points)
+    return geojson.dumps(route_points)
+    #i += 1 #need to figure looping through route in response to clicking on "no" on map page
         
 if __name__ == '__main__':
     app.run(debug=True, port=5001)

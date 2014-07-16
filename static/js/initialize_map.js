@@ -28,13 +28,18 @@ geocoder = new google.maps.Geocoder();
 function geocode () {
   var address = $('#address').val();
   geocoder.geocode( { 'address': address}, function(results, status) {
-      if (status == google.maps.GeocoderStatus.OK) 
-      {
-          var googleLatLng = results[0].geometry.location
-          var lat = results[0].geometry.location.lat()
-          var lng = results[0].geometry.location.lng()
-          var latlng = [lat,lng]
+      if (status == google.maps.GeocoderStatus.OK) {
+        if (results[0]) {
+          var googleLatLng = results[0].geometry.location;
+          var lat = results[0].geometry.location.lat();
+          var lng = results[0].geometry.location.lng();
+          // var latlng = [lat,lng];
           map.setCenter(googleLatLng);
+          submitdata(lat,lng);
+        }
+        else {
+          console.log("Geocode function not working!")
+        }
           // This places a marker in the center, which I do not want.
           //var marker = new google.maps.Marker({
           //    map: map, 
@@ -45,41 +50,38 @@ function geocode () {
       {
         alert("Geocode was not successful for the following reason: " + status);
       }
-      submitdata(latlng);
   });
-  
 }
 
   // Rendering route.
-  function submitdata (latlng) {
-      $.getJSON($SCRIPT_ROOT + '/route', {
-        latlng: latlng,
-        minDistance: $('input[name="min_distance"]').val(),
-        maxDistance: $('input[name="max_distance"]').val()
-    }, function(data) {   
-      // Load the GeoJSON monster stomp.
-      
-      // TO TEST - Declaring static json file as variable and loading onto map.
-      // var geoJSON = 'js/geoJSON_single_route.json'
-      // map.data.loadGeoJson(geoJSON);
-      $map.data.loadGeoJson("#route_points"); // this line - how to declare route_points as varible?
-      
-      // Set the styling.
-      var featureStyle = {
-      // fillColor: 'green',
-      strokeWeight: 10
-      }
-      map.data.setStyle(featureStyle);
-    });
-    return false;
-  };
+  function submitdata (lat,lng) {
+    console.log(lat)
+    console.log(lng)
+    $.getJSON('/route', {
+      lat: lat.toString(),
+      lng: lng.toString(),
+      minDistance: $('input[name="min_distance"]').val(),
+      maxDistance: $('input[name="max_distance"]').val(),
+  }, function(routeJson) {
+    // Load the GeoJSON monster stomp.
+    var geoJson = routeJson
+    console.log(geoJson);
+    map.data.loadGeoJson(geoJson);
+    // Set the styling.
+     var featureStyle = {
+     fillColor: 'green',
+     strokeWeight: 10
+     }
+    map.data.setStyle(featureStyle);
+  });
+  return false;
+};
   
   $(document).ready(function() {
     initialize();
     
     $('input#render').bind('click', function () {
-      var latlng = geocode();
-      submitdata(latlng);
+      geocode();
     });
   });
 
