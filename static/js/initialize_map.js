@@ -53,10 +53,24 @@ function geocode () {
         lat_lng: lat_lng,
         min_distance: $('input[name="min_distance"]').val(),
         max_distance: $('input[name="max_distance"]').val()
-    }, function(data) {
-      $("#result").text(data.result);
+    }, function(data) {   
+      // Load the GeoJSON monster stomp.
+      
+      // TO TEST - Declaring static json file as variable and loading onto map.
+      // var geoJSON = 'js/geoJSON_single_route.json'
+      // map.data.loadGeoJson(geoJSON);
+      //$("#route_points").text(data.route_points); // this line - how to declare geoJson as varible?
+        var geoJSON = 'js/geoJSON_single_route.json'
+        map.data.loadGeoJson(geoJSON);
+      
+      // Set the styling.
+      var featureStyle = {
+      // fillColor: 'green',
+      strokeWeight: 10
+      }
+      map.data.setStyle(featureStyle);
+    });
     return false;
-    });  
   };
   
   $(document).ready(function() {
