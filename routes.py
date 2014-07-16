@@ -16,15 +16,20 @@ mmf = MapMyFitness(api_key='hhp3ye7mq97jnuz8rxfzwc3fz39ef3rp',
 def homepage():
     return render_template("index.html")
 
-@app.route('/_route')
+@app.route('/route')
 def search_route():
     '''Search for all routes near latitute-longitude, maximum and minimum distance are optional. Distances currently in meters and  default to minimum of 1 mile (1609 meters) and 10 miles (16093 meters). '''
-    lat_lng = lat_lng #add check here - request lat_long to continue if none is entered
-    min_distance = request.args.get('min_distance', 1609, type=int)
-    max_distnace = request.args.get('max_distance', 16093, type=int)
-    routes_paginator = mmf.route.search(close_to_location=[lat_lng],
+    print "IN THE search_route FUNCTION********************"
+    lat_lng = request.args.get('latlng') #add check here - request lat_long to continue if none is entered
+    print "This is the lat_lng" , lat_lng
+    min_distance = request.args.get('minDistance', 1609, type=int)
+    print "This is the minimum distance" , min_distance
+    max_distance = request.args.get('maxDistance', 16093, type=int)
+    print "This is the maximum distance" , max_distance
+    routes_paginator = mmf.route.search(close_to_location=lat_lng,
                                         minimum_distance=min_distance,
                                         maximum_distance=max_distance)
+    print "THIS IS THE routes_paginator" , routes_pagniator
     page_range = routes_paginator.page_range
     if len(page_range) > 0:
         route_list = []
@@ -36,6 +41,7 @@ def search_route():
         print "Warning! Page_range length is: " , page_range
 
 def render_route(route_list):
+    print "IN THE render_route FUNCTION**********************"
     '''Search for a route by ID, get points as lat/lng tuples, turn into a geoJSON of lat/lng lists.'''
     i = 0
     for route[i] in route_list:

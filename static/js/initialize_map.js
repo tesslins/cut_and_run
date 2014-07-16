@@ -12,10 +12,10 @@ function trace(message)
 
 // Create the map.
 function initialize () {
-  var latlng = new google.maps.LatLng(37.8,-122.2);
+  var oakland = new google.maps.LatLng(37.8,-122.2);
   var mapOptions = {
     zoom: 12,
-    center: latlng,
+    center: oakland,
     mapTypeId: google.maps.MapTypeId.TERRAIN 
   };
   map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
@@ -30,8 +30,11 @@ function geocode () {
   geocoder.geocode( { 'address': address}, function(results, status) {
       if (status == google.maps.GeocoderStatus.OK) 
       {
-          var lat_lng = results[0].geometry.location
-          map.setCenter(lat_lng);
+          var googleLatLng = results[0].geometry.location
+          var lat = results[0].geometry.location.lat()
+          var lng = results[0].geometry.location.lng()
+          var latlng = [lat,lng]
+          map.setCenter(googleLatLng);
           // This places a marker in the center, which I do not want.
           //var marker = new google.maps.Marker({
           //    map: map, 
@@ -42,26 +45,24 @@ function geocode () {
       {
         alert("Geocode was not successful for the following reason: " + status);
       }
-      return lat_lng;
+      submitdata(latlng);
   });
   
 }
 
   // Rendering route.
-  function submitdata (lat_lng) {
-      $.getJSON($SCRIPT_ROOT + '/_route', {
-        lat_lng: lat_lng,
-        min_distance: $('input[name="min_distance"]').val(),
-        max_distance: $('input[name="max_distance"]').val()
+  function submitdata (latlng) {
+      $.getJSON($SCRIPT_ROOT + '/route', {
+        latlng: latlng,
+        minDistance: $('input[name="min_distance"]').val(),
+        maxDistance: $('input[name="max_distance"]').val()
     }, function(data) {   
       // Load the GeoJSON monster stomp.
       
       // TO TEST - Declaring static json file as variable and loading onto map.
       // var geoJSON = 'js/geoJSON_single_route.json'
       // map.data.loadGeoJson(geoJSON);
-      //$("#route_points").text(data.route_points); // this line - how to declare geoJson as varible?
-        var geoJSON = 'js/geoJSON_single_route.json'
-        map.data.loadGeoJson(geoJSON);
+      $map.data.loadGeoJson("#route_points"); // this line - how to declare route_points as varible?
       
       // Set the styling.
       var featureStyle = {
@@ -77,8 +78,8 @@ function geocode () {
     initialize();
     
     $('input#render').bind('click', function () {
-      var lat_lng = geocode();
-      submitdata(lat_lng);
+      var latlng = geocode();
+      submitdata(latlng);
     });
   });
 
