@@ -47,12 +47,26 @@ def render_route(route_list):
     i = 0
     #for route in route_list:
     route_object = route_list[i]
+    print route_object.name
+    print route_object.description
+    print route_object.distance
     route_points = route_object.points(geojson=True) #this ALMOST creates a geoJSON, requires the next 3 lines to actually get to geoJson format
     lat_lng_tuples = route_points['coordinates']
     lat_lng_lists = [list(point) for point in lat_lng_tuples]
     route_points['coordinates'] = lat_lng_lists
-    print geojson.dumps(route_points)
-    return geojson.dumps(route_points)
+    route_points_geojson = {
+        "type": "FeatureCollection",
+        "features": [{
+        "type": "Feature",
+        "geometry": {
+        # route_points inserted here
+        }
+        }
+        ]
+    }
+    route_points_geojson['features'][0]['geometry'] = route_points
+    print type(route_points_geojson)
+    return geojson.dumps(route_points_geojson) #appears to be idential to normal json
     #i += 1 #need to figure looping through route in response to clicking on "no" on map page
         
 if __name__ == '__main__':
