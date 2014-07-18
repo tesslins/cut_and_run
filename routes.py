@@ -47,9 +47,6 @@ def render_route(route_list):
     i = 0
     #for route in route_list:
     route_object = route_list[i]
-    print route_object.name
-    print route_object.description
-    print route_object.distance
     route_points = route_object.points(geojson=True) #this ALMOST creates a geoJSON, requires the next 3 lines to actually get to geoJson format
     lat_lng_tuples = route_points['coordinates']
     lat_lng_lists = [list(point) for point in lat_lng_tuples]
@@ -65,10 +62,19 @@ def render_route(route_list):
         ]
     }
     route_points_geojson['features'][0]['geometry'] = route_points
-    print type(route_points_geojson)
+    show_yes_no_buttons()
     return geojson.dumps(route_points_geojson) #appears to be idential to normal json
     #i += 1 #need to figure looping through route in response to clicking on "no" on map page
-        
+    
+    #def show_yes_no_buttons():
+    #    "Renders new html to show yes/no buttons for the user to choose if they like the route or not."
+    #    print "********show_yes_no_buttons function*******"
+    #    pass
+        # how to get certain buttons to only render by javascript call? idea - always have them there but make them actually appear on click of find a route button.
+        # return render_template("yes_no_buttons.html")
+    
+
+    
 if __name__ == '__main__':
     app.run(debug=True, port=5001)
 

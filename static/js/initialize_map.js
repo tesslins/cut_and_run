@@ -47,33 +47,51 @@ function geocode () {
   });
 }
 
-  // Rendering route.
-  function submitdata (lat,lng) {
-    $.getJSON('/route', {
-      lat: lat.toString(),
-      lng: lng.toString(),
-      minDistance: $('input[name="min_distance"]').val(),
-      maxDistance: $('input[name="max_distance"]').val(),
-  }, function(routeJson) {
-    // Load the GeoJSON ((monster stomp)).
-    var pyGeoJson = JSON.stringify(routeJson);
-    console.log(typeof pyGeoJson);
-    map.data.loadGeoJson(pyGeoJson);
-    // Set the styling.
-     var featureStyle = {
-     fillColor: 'green',
-     strokeWeight: 10
-     }
-    map.data.setStyle(featureStyle);
-  });
-  return false;
-};
+// Rendering route.
+function submitdata (lat,lng) {
+  $.getJSON('/route', {
+    lat: lat.toString(),
+    lng: lng.toString(),
+    minDistance: $('input[name="min_distance"]').val(),
+    maxDistance: $('input[name="max_distance"]').val(),
+}, function(routeJson) {
+  // Load the GeoJSON ((monster stomp)).
+  var pyGeoJson = JSON.stringify(routeJson);
+  console.log(pyGeoJson);
+  var staticGeoJson = 'js/geoJSON_route_Oakland.json';
+  console.log(staticGeoJson);
+  map.data.loadGeoJson(pyGeoJson);
+  // Set the styling.
+   var featureStyle = {
+   fillColor: 'green',
+   strokeWeight: 10
+   }
+  map.data.setStyle(featureStyle);
+});
+return false;
+}
+
+// The no button. Re-run submit data? Or render second route?
+function showNextRoute() {
+  
+}
+
+// The yes button.
+
   
   $(document).ready(function() {
     initialize();
     
     $('input#render').bind('click', function () {
       geocode();
+    });
+    
+    $('input#no').bind('click', function(){
+      
+    });
+    
+    $('input#yes').bind('click', function() {
+      
     });
   });
 

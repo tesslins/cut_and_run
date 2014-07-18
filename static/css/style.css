@@ -1,5 +1,27 @@
-html, body, #map-canvas {
-  height: 100%;
-  margin: 0px;
-  padding: 0px
+html { height: 100% }
+body { height: 100%; margin: 0; padding: 0 }
+
+#map-canvas {
+    height: 100%;
+    margin-left: 240px;
+    padding: 0px
 }
+
+#sidebar {
+    position: absolute;
+    width: 220px;
+    height: 100%;
+    overflow:auto;
+    float: left;
+    padding-left: 10px;
+    padding-right: 10px; 
+}
+
+.sidebar-box {
+    background:#e5e5e5;
+    padding:10px
+}
+
+
+
+
