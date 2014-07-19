@@ -17,8 +17,8 @@ mmf = MapMyFitness(api_key='hhp3ye7mq97jnuz8rxfzwc3fz39ef3rp',
 def homepage():
     return render_template("index.html")
 
-@app.route('/route')
-def search_route():
+@app.route('/api_call')
+def call_mmf_api():
     '''Search for all routes near latitute-longitude, maximum and minimum distance are optional. Distances currently in meters and  default to minimum of 1 mile (1609 meters) and 10 miles (16093 meters). '''
     print "*****search_route function******"
     lat = request.args.get('lat')
@@ -26,28 +26,34 @@ def search_route():
     lat_lng = []
     lat_lng.append(lat)
     lat_lng.append(lng)
-    min_distance = request.args.get('minDistance', 1609, type=int)
+    min_distance = request.args.get('minDistance', 1609, type=int) 
     max_distance = request.args.get('maxDistance', 16093, type=int)
-    routes_paginator = mmf.route.search(close_to_location=lat_lng,
+    routes_object = mmf.route.search(close_to_location=lat_lng,
                                         minimum_distance=min_distance,
                                         maximum_distance=max_distance)
-    page_range = routes_paginator.page_range
-    if len(page_range) > 0:
-        route_list = []
-        the_page = routes_paginator.page(page_range[0])
-        for route in the_page:
-            route_list.append(route)
-        return render_route(route_list) #add check here (if length of route_list = 0, maybe if length of route_list < 5, hollaback with a message)
-    else: #add check here (if length of page_range = 0, tell the user something? the "close" in close_to_location is not specified)
-        print "Warning! Page_range length is: " , page_range
+    if routes_object: #improve this check
+        return render_route(routes_object, index)
+    else:
+        print "Warning! No routes returned from MapMyFitness API."
+        
+@app.route('/pass_index')
+def pass_index():
+    print "*****pass_index function******"
+    "Get single route points as lat/lng tuples, turn into a geoJSON of lat/lng lists."
+    index = request.args.get('index')
+    #routes_object = routes_object
+    print "This is the index: " , index
+    return render_route(index)
 
-def render_route(route_list):
+def render_route(routes_object,index):
     print "*****render_route function******"
-    '''Search for a route by ID, get points as lat/lng tuples, turn into a geoJSON of lat/lng lists.'''
-    i = 0
-    #for route in route_list:
-    route_object = route_list[i]
-    route_points = route_object.points(geojson=True) #this ALMOST creates a geoJSON, requires the next 3 lines to actually get to geoJson format
+    '''Get single route points as lat/lng tuples, turn into a geoJSON of lat/lng lists.'''
+    #figure a better way to call this so it's not just the first page? although perhaps 40 = enough?
+    page_range = routes_object.page_range
+    page_num = page_range[0]
+    single_page = routes_object.page(page_num)
+    route_object = single_page[index]
+    route_points = route_object.points(geojson=True) #this ALMOST creates a geoJSON, requires the next 3 lines to actually get to geoJson format  
     lat_lng_tuples = route_points['coordinates']
     lat_lng_lists = [list(point) for point in lat_lng_tuples]
     route_points['coordinates'] = lat_lng_lists
@@ -62,18 +68,7 @@ def render_route(route_list):
         ]
     }
     route_points_geojson['features'][0]['geometry'] = route_points
-    show_yes_no_buttons()
-    return geojson.dumps(route_points_geojson) #appears to be idential to normal json
-    #i += 1 #need to figure looping through route in response to clicking on "no" on map page
-    
-    #def show_yes_no_buttons():
-    #    "Renders new html to show yes/no buttons for the user to choose if they like the route or not."
-    #    print "********show_yes_no_buttons function*******"
-    #    pass
-        # how to get certain buttons to only render by javascript call? idea - always have them there but make them actually appear on click of find a route button.
-        # return render_template("yes_no_buttons.html")
-    
-
+    return geojson.dumps(route_points_geojson) #appears to be identical to normal json
     
 if __name__ == '__main__':
     app.run(debug=True, port=5001)
