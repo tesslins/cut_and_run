@@ -45,7 +45,7 @@ def call_mmf_api():
 def pass_index():
     print "*****pass_index function******"
     ''' Retrives index from javascript for incrementing through routes.'''
-    index = request.args.get('index', '0', type=str)
+    index = request.args.get('index', "0", type=str) #need zero since it is before the no button click
     print json.dumps(index)
     print type(json.dumps(index))
     return json.dumps(index)
