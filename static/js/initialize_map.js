@@ -55,31 +55,47 @@ function submitdata (lat,lng) {
     minDistance: $('input[name="min_distance"]').val(),
     maxDistance: $('input[name="max_distance"]').val(),
 }, function(routeJson) {
-    // Send routeJson to renderRoute.
-    console.log("MapMyFitness API call was successful!")
+    // Return routesObject to Javascript, call showNextRoute to get Index variable. Do I need to pass variable to access it in a different function?
     renderRoute(routeJson);
+    console.log("MapMyFitness API call was successful!");
 });
 return false;
 }
 
-// Call to Python for additional route after initial API call. Runs on click of "Nope" button.
-var index = 1; // starts at [1] because [0] is the initial route render
-function showNextRoute() {
+// Passes index to Python, increments index after call. Runs on click of no button
+function passIndex() {
+  //var value = parseInt(document.getElementById('no').value, 0);
+  //value = isNaN(value) ? 0 : value;
+  //value++;
+  //document.getElementById('number').value = value;
   $.getJSON('/pass_index', {
-    index: index.toString(),
-  }, function(routeJson) {
-    // Send routeJson to renderRoute.
-    renderRoute(routeJson);
-    index = index + 1
-    console.log(index)
+    index: value.toString(),
+  }, function(index) {
+    // Increments each time index is passed, aka each time a new route object is created.
+    console.log(index);
+    console.log('index before increment');
+    index = index + 1;
+    console.log("index after increment");
+    console.log(index);
   });
 }
 
+// Get the next route. Runs on click of no button.
+function showNextRoute() {
+  $.getJSON('/create_route' , {
+    getroute: 'yesplease'
+  } , function(routeJson) {
+    renderRoute(routeJson);
+  });
+}
+                                
 // Render route.
 function renderRoute (routeJson) {
   // Load the GeoJSON ((monster stomp)).
-  var pyGeoJson = JSON.stringify(routeJson);
+  var pyGeoJson = routeJson;
+  console.log(pyGeoJson);
   var staticGeoJson = 'js/geoJSON_route_Oakland.json';
+  console.log(staticGeoJson);
   map.data.loadGeoJson(staticGeoJson);
   // Set the styling.
    var featureStyle = {
@@ -91,9 +107,6 @@ function renderRoute (routeJson) {
 }
 
 // Stores route in the session. Runs on the click of yes button.
-function storeRoute() {
-  
-}
 
   
   $(document).ready(function() {
@@ -104,12 +117,13 @@ function storeRoute() {
     });
     
     $('input#no').bind('click', function() { 
+      passIndex();
+      console.log("passIndex called");
       showNextRoute();
-      console.log("Leaving main function");
+      console.log("showNextRoute called")
     });
     
     $('input#yes').bind('click', function() {
-      storeRoute();
       
     });
   });
