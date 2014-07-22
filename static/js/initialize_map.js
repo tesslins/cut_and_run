@@ -66,19 +66,18 @@ return false;
 
 // Passes index to Python, increments index after call.
 // Runs on click of no button
+var value = 1;
+console.log(value)
 function passIndex() {
-  var value = parseInt(document.getElementById('no').value, 0);
-  console.log("inside function")
-  console.log(value)
-  value = isNaN(value) ? 0 : value;
-  document.getElementById('number').value = value;
+  debugger
   $.getJSON('/pass_index', {
     index: value.toString(),
   }, function(index) {
     // Increments each time index is passed.
+    value++;
     console.log(index);
   });
-value++;
+
 }
 
 // Get the next route. Runs on click of no button.
@@ -117,8 +116,11 @@ function renderRoute (js_file) {
     $('input#no').bind('click', function() { 
       passIndex();
       console.log("passIndex called");
-      showNextRoute();
-      console.log("showNextRoute called")
+      if (passIndex) {
+        showNextRoute();
+        console.log("showNextRoute called")
+      }
+
     });
     
     $('input#yes').bind('click', function() {
