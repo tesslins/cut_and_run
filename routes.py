@@ -72,10 +72,10 @@ def create_route_object():
     index = int(index)
     route_object = single_page[index]
     route_id = route_object.id
-    return create_geojson(route_object)
+    return create_geojson(route_object, route_id)
 
 
-def create_geojson(route_object):
+def create_geojson(route_object, route_id):
     '''Get route points as lat/lng tuples, turn into a geoJSON of lat/lng
     lists.'''
     print "*****create_geojson function******"
@@ -97,11 +97,15 @@ def create_geojson(route_object):
     }
     route_points_geojson['features'][0]['geometry'] = route_points
     #route_points_geojson = str(route_points_geojson)
-    with io.open('static/js/test.json', 'w', encoding='utf-8') as f:
+    py_file = 'static/js/' + str(route_id) + '.json'
+    with io.open(py_file, 'w', encoding='utf-8') as f:
         f.write(unicode(geojson.dumps(route_points_geojson,
                                       ensure_ascii=False)))
-        f.close()
-    return geojson.dumps(route_points_geojson)
+    f.close()
+    js_file = 'js/' + str(route_id) + '.json'
+    print js_file
+    print type(js_file)
+    return json.dumps(js_file)
 
 #@app.route('/route', methods=["POST"])
 #def ajax_call():

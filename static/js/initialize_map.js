@@ -57,8 +57,8 @@ function submitdata (lat,lng) {
     lng: lng.toString(),
     minDistance: $('input[name="min_distance"]').val(),
     maxDistance: $('input[name="max_distance"]').val(),
-}, function(routeJson) {
-    renderRoute(routeJson);
+}, function(js_file) {
+    renderRoute(js_file);
     console.log("MapMyFitness API call was successful.");
 });
 return false;
@@ -85,18 +85,18 @@ value++;
 function showNextRoute() {
   $.getJSON('/create_route' , {
     getroute: 'yesplease'
-  } , function(routeJson) {
+  } , function(js_file) {
     renderRoute();
   });
 }
 
 
-
-                                
 // Render route.
-function renderRoute (routeJson) {
+function renderRoute (js_file) {
   // Load the GeoJSON ((monster stomp)).
-  map.data.loadGeoJson('js/test.json');
+  console.log(js_file)
+  console.log(typeof js_file)
+  map.data.loadGeoJson(js_file);
   // Set the styling.
    var featureStyle = {
    fillColor: 'green',
