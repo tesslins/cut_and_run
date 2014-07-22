@@ -7,9 +7,14 @@
       <link rel="stylesheet" type="text/css" href="css/style.css" />
       <title>{% block title %}base{% endblock %}</title>
       <!-- Google Maps & Places API -->
-      <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?libraries=places&sensor=false"></script>
+      <script
+        type="text/javascript"
+        src="http://maps.googleapis.com/maps/api/js?libraries=places&sensor=false">
+      </script>
       <!-- jQuery: need to also add script for static jQuery just in case?! --> 
-      <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+      <script
+        src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js">
+      </script>
       {%block head_js %}
       <script type='text/javascript' src="js/initialize_map.js"></script>
       {% endblock %}

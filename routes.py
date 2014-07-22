@@ -6,6 +6,7 @@ import requests
 import requests.auth
 import json
 import geojson
+import io
 
 
 app = Flask(__name__, static_url_path='') #what is static_url_path?
@@ -23,7 +24,10 @@ def homepage():
 
 @app.route('/api_call')
 def call_mmf_api():
-    '''Search for all routes near latitute-longitude, maximum and minimum distance are optional. Distances currently in meters and default to minimum of 1 mile (1609 meters) and 10 miles (16093 meters). Returned query is currently global variable. :('''
+    '''Search for all routes near latitute-longitude, maximum and minimum
+    distance are optional. Distances currently in meters and default to minimum
+    of 1 mile (1609 meters) and 10 miles (16093 meters). Returned query is
+    currently global variable. :('''
     print "*****search_route function******"
     lat = request.args.get('lat')
     lng = request.args.get('lng')
@@ -36,25 +40,28 @@ def call_mmf_api():
     ROUTES_OBJECT = mmf.route.search(close_to_location=lat_lng,
                                         minimum_distance=min_distance,
                                         maximum_distance=max_distance)
-    if ROUTES_OBJECT: #improve this check
+    if ROUTES_OBJECT: # and hasattr(routes_object, 'page_range'):
         return create_route_object()
+        print "MapMyFitness API call made."
     else:
         print "Warning! No routes returned from MapMyFitness API."
         
 @app.route('/pass_index')
 def pass_index():
-    print "*****pass_index function******"
     ''' Retrives index from javascript for incrementing through routes.'''
-    index = request.args.get('index', "0", type=str) #need zero since it is before the no button click
+    print "*****pass_index function******"
+    # need zero since it is before the no button click
+    index = request.args.get('index', "0", type=str) 
     print json.dumps(index)
     print type(json.dumps(index))
     return json.dumps(index)
     
 @app.route('/create_route')
 def create_route_object():
-    print "*****create_route_object function******"
     '''Returns single route object from routes object.'''
-    #figure a better way to call this so it's not just the first page? although perhaps 40 = enough?
+    print "*****create_route_object function******"
+    # figure a better way to call this so it's not just the first page?
+    # although perhaps 40 = enough?
     global ROUTES_OBJECT
     route_request = request.args.get('getroute', 'firstroute', type=str)
     page_range = ROUTES_OBJECT.page_range
@@ -64,12 +71,17 @@ def create_route_object():
     index = json.loads(index)
     index = int(index)
     route_object = single_page[index]
-    return render_route(route_object)
+    route_id = route_object.id
+    return create_geojson(route_object)
 
-def render_route(route_object):
-    print "*****render_route function******"
-    '''Get route points as lat/lng tuples, turn into a geoJSON of lat/lng lists.'''
-    route_points = route_object.points(geojson=True) #this ALMOST creates a geoJSON, requires the next 3 lines to actually get to geoJson format  
+
+def create_geojson(route_object):
+    '''Get route points as lat/lng tuples, turn into a geoJSON of lat/lng
+    lists.'''
+    print "*****create_geojson function******"
+    route_points = route_object.points(geojson=True)
+    #this ALMOST creates a geoJSON, requires the next 3 lines to actually get
+    #to necessary format  
     lat_lng_tuples = route_points['coordinates']
     lat_lng_lists = [list(point) for point in lat_lng_tuples]
     route_points['coordinates'] = lat_lng_lists
@@ -84,8 +96,17 @@ def render_route(route_object):
         ]
     }
     route_points_geojson['features'][0]['geometry'] = route_points
-    route_points_geojson = str(route_points_geojson)
-    return geojson.dumps(route_points_geojson) #appears to be identical to normal json
+    #route_points_geojson = str(route_points_geojson)
+    with io.open('static/js/test.json', 'w', encoding='utf-8') as f:
+        f.write(unicode(geojson.dumps(route_points_geojson,
+                                      ensure_ascii=False)))
+        f.close()
+    return geojson.dumps(route_points_geojson)
+
+#@app.route('/route', methods=["POST"])
+#def ajax_call():
+#    print request.form
+#    return "helllllllooo"
     
 if __name__ == '__main__':
     app.run(debug=True, port=5001)

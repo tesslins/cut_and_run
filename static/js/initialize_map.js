@@ -14,7 +14,7 @@ function trace(message)
 function initialize () {
   var oakland = new google.maps.LatLng(37.8,-122.2);
   var mapOptions = {
-    zoom: 8,
+    zoom: 12,
     center: oakland,
     mapTypeId: google.maps.MapTypeId.TERRAIN 
   };
@@ -41,13 +41,16 @@ function centerMap () {
       } 
       else 
       {
-        alert("centerMap function was not successful for the following reason: " + status);
+        alert(
+        "centerMap function was not successful for the following reason: "
+        + status);
       }
   });
 }
-// Need to add a check to ensure that this is a real address - 94616 sent me to eastern Europe?
+// Need to add a check to ensure that this is a real address
 
-// Call to Python for initial MapMyFitness API call. Runs on click of "Find A Route" button.
+// Call to Python for initial MapMyFitness API call.
+// Runs on completion of centerMap function.
 function submitdata (lat,lng) {
   $.getJSON('/api_call', {
     lat: lat.toString(),
@@ -55,14 +58,14 @@ function submitdata (lat,lng) {
     minDistance: $('input[name="min_distance"]').val(),
     maxDistance: $('input[name="max_distance"]').val(),
 }, function(routeJson) {
-    // Return routesObject to Javascript, call showNextRoute to get Index variable. Do I need to pass variable to access it in a different function?
     renderRoute(routeJson);
-    console.log("MapMyFitness API call was successful!");
+    console.log("MapMyFitness API call was successful.");
 });
 return false;
 }
 
-// Passes index to Python, increments index after call. Runs on click of no button
+// Passes index to Python, increments index after call.
+// Runs on click of no button
 function passIndex() {
   var value = parseInt(document.getElementById('no').value, 0);
   console.log("inside function")
@@ -72,7 +75,7 @@ function passIndex() {
   $.getJSON('/pass_index', {
     index: value.toString(),
   }, function(index) {
-    // Increments each time index is passed, aka each time a new route object is created.
+    // Increments each time index is passed.
     console.log(index);
   });
 value++;
@@ -83,16 +86,17 @@ function showNextRoute() {
   $.getJSON('/create_route' , {
     getroute: 'yesplease'
   } , function(routeJson) {
-    renderRoute(routeJson);
+    renderRoute();
   });
 }
+
+
+
                                 
 // Render route.
 function renderRoute (routeJson) {
   // Load the GeoJSON ((monster stomp)).
-  var pyGeoJson = routeJson;
-  var staticGeoJson = 'js/geoJSON_route_Oakland.json';
-  map.data.loadGeoJson(staticGeoJson);
+  map.data.loadGeoJson('js/test.json');
   // Set the styling.
    var featureStyle = {
    fillColor: 'green',
@@ -103,8 +107,6 @@ function renderRoute (routeJson) {
 }
 
 // Stores route in the session. Runs on the click of yes button.
-
-  
   $(document).ready(function() {
     initialize();
     
