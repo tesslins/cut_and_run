@@ -51,8 +51,6 @@ def pass_index():
     ''' Retrives index from javascript for incrementing through routes.'''
     print "*****pass_index function******"
     index = request.args.get('index', 0) 
-    print index
-    print type(json.dumps(index))
     return json.dumps(index)
     
 @app.route('/create_route')
@@ -62,16 +60,20 @@ def create_route_object():
     # figure a better way to call this so it's not just the first page?
     # although perhaps 40 = enough?
     global ROUTES_OBJECT
-    route_request = request.args.get('getroute', 'firstroute', type=str)
+    index = request.args.get('index', 0)
     page_range = ROUTES_OBJECT.page_range
     page_num = page_range[0]
     single_page = ROUTES_OBJECT.page(page_num)
-    index = pass_index()
-    index = json.loads(index)
-    index = int(index)
-    route_object = single_page[index]
-    route_id = route_object.id
-    return create_geojson(route_object, route_id)
+    #index = json.loads(index)
+    if type(index) != int:
+        index = int(index)
+        route_object = single_page[index]
+        route_id = route_object.id
+        return create_geojson(route_object, route_id)
+    else:
+        route_object = single_page[index]
+        route_id = route_object.id
+        return create_geojson(route_object, route_id)
 
 
 def create_geojson(route_object, route_id):

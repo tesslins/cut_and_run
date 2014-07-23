@@ -66,29 +66,28 @@ return false;
 
 // Passes index to Python, increments index after call.
 // Runs on click of no button
-var value = 1;
-console.log(value)
+var value = 1; // Must be one, first time is default to 0.
 function passIndex() {
-  debugger
   $.getJSON('/pass_index', {
     index: value.toString(),
   }, function(index) {
-    // Increments each time index is passed.
+    // Increments value each time index is passed.
+    showNextRoute(index)
+    console.log(typeof index)
     value++;
-    console.log(index);
+    console.log('Index passed and value incremented.')
   });
-
 }
+// Can increment without calling Python, duh. Oops? Fix!
 
 // Get the next route. Runs on click of no button.
-function showNextRoute() {
+function showNextRoute(index) {
   $.getJSON('/create_route' , {
-    getroute: 'yesplease'
+    index: index.toString(),
   } , function(js_file) {
-    renderRoute();
+    renderRoute(js_file);
   });
 }
-
 
 // Render route.
 function renderRoute (js_file) {
@@ -116,11 +115,6 @@ function renderRoute (js_file) {
     $('input#no').bind('click', function() { 
       passIndex();
       console.log("passIndex called");
-      if (passIndex) {
-        showNextRoute();
-        console.log("showNextRoute called")
-      }
-
     });
     
     $('input#yes').bind('click', function() {
