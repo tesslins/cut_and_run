@@ -1,4 +1,4 @@
-// Declare the map & geocoder.
+// Declare the map & geocoder & feature.
 var map;
 var geocoder;
 var feature;
@@ -40,13 +40,13 @@ function centerMap() {
             }
         } else {
             alert(
-                "centerMap function was not successful for the following reason: "
+                "centerMap function was not successful because: "
                     + status
             );
         }
     });
 }
-// Need to add a check to ensure that this is a real address
+// To fix: Need to add a check to ensure that this is a real US zip code.
 
 // Call to Python for initial MapMyFitness API call.
 // Runs on completion of centerMap function.
@@ -65,7 +65,7 @@ function submitData(lat, lng) {
 
 // Passes index to Python, increments index after call.
 // Runs on click of no button
-var value = 1; // Must be one, first time is default to 0.
+var value = 1; // Must be 1, first time is default to 0 (in Python).
 function passIndex() {
     $.getJSON('/pass_index', {
         index: value.toString()
@@ -77,7 +77,7 @@ function passIndex() {
         console.log('Index passed and value incremented.');
     });
 }
-// Can increment without calling Python, duh. Oops? Fix!
+// To fix: an increment without Python call, duh! Get rid of this function!
 
 // Get the next route. Runs on click of no button.
 function showNextRoute(index) {
@@ -91,8 +91,7 @@ function showNextRoute(index) {
 // Render route.
 function renderRoute(js_file) {
     // Load the GeoJSON ((monster stomp)).
-    //map.data.setMap(null);
-    map.data.loadGeoJson(js_file);
+    feature = map.data.loadGeoJson(js_file);
     // Set the styling.
     var featureStyle = {
             fillColor: 'green',
@@ -100,9 +99,10 @@ function renderRoute(js_file) {
         };
     map.data.setStyle(featureStyle);
     console.log("Rendering route was successful!");
+    console.log(feature)
 }
 
-// Clears previous route from map.
+// Reset map to null to clear previous route.
 function clearMap() {
     map.data.setMap(null);
     passIndex();
@@ -114,6 +114,8 @@ $(document).ready(function () {
         centerMap();
     });
     $('input#no').bind('click', function () {
+        //clearMap();
+        //console.log("clearMap called");
         passIndex();
         console.log("passIndex called"); 
     });
