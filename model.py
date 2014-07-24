@@ -18,5 +18,7 @@ class Route(Base):
     __tablename__ = 'routes'
     
     id = Column(Integer, primary_key = True)
-    route_id = Column()
+    route_id = Column(Integer(10), nullable = False)
+    route_object = Column
+    direction_link = Column
 

@@ -1,7 +1,10 @@
 // Declare the map & geocoder & feature.
 var map;
 var geocoder;
-var feature;
+var i;
+var routeArray = [];
+var lat;
+var lng;
 
 // Console log.
 function trace(message) {
@@ -14,7 +17,7 @@ function trace(message) {
 function initialize() {
     var oakland = new google.maps.LatLng(37.8, -122.2);
     var mapOptions = {
-        zoom: 12,
+        zoom: 13,
         center: oakland,
         mapTypeId: google.maps.MapTypeId.TERRAIN
     };
@@ -22,17 +25,29 @@ function initialize() {
                               mapOptions);
 }
 
+// Recreate map between routes.
+function reinitialize() {
+    var center = new google.maps.LatLng(lat, lng);
+    var mapOptions = {
+        zoom: 13,
+        center: center,
+        mapTypeId: google.maps.MapTypeId.TERRAIN
+    };
+    map = new google.maps.Map(document.getElementById('map-canvas'),
+                              mapOptions);
+    passIndex();
+}
+
 // Centers map on zip code. Runs on click of "Find A Route" button.
 geocoder = new google.maps.Geocoder();
-
 function centerMap() {
     var address = $('#address').val();
     geocoder.geocode({ 'address': address}, function (results, status) {
         if (status === google.maps.GeocoderStatus.OK) {
             if (results[0]) {
                 var googleLatLng = results[0].geometry.location;
-                var lat = results[0].geometry.location.lat();
-                var lng = results[0].geometry.location.lng();
+                lat = results[0].geometry.location.lat();
+                lng = results[0].geometry.location.lng();
                 map.setCenter(googleLatLng);
                 submitData(lat, lng);
             } else {
@@ -91,21 +106,24 @@ function showNextRoute(index) {
 // Render route.
 function renderRoute(js_file) {
     // Load the GeoJSON ((monster stomp)).
-    feature = map.data.loadGeoJson(js_file);
+    routeArray.push(js_file);
+    map.data.loadGeoJson(js_file);
     // Set the styling.
     var featureStyle = {
-            fillColor: 'green',
-            strokeWeight: 10
+            strokeColor: 'green',
+            strokeWeight: 10,
+            strokeOpacity: 0.5
         };
     map.data.setStyle(featureStyle);
     console.log("Rendering route was successful!");
-    console.log(feature)
 }
 
-// Reset map to null to clear previous route.
-function clearMap() {
+// Attempt to clear layers.
+function clearLayer() {
     map.data.setMap(null);
-    passIndex();
+    reinitialize();
+    console.log("data layer cleared")
+    
 }
 
 $(document).ready(function () {
@@ -114,10 +132,7 @@ $(document).ready(function () {
         centerMap();
     });
     $('input#no').bind('click', function () {
-        //clearMap();
-        //console.log("clearMap called");
-        passIndex();
-        console.log("passIndex called"); 
+        clearLayer();
     });
     $('input#yes').bind('click', function () {
     });
