@@ -1,25 +1,44 @@
-html { height: 100% }
-body { height: 100%; margin: 0; padding: 0 }
+html {
+    height: 100%
+}
+
+body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, Helvetica, sans-serif;
+}
 
 #map-canvas {
     height: 100%;
-    margin-left: 240px;
-    padding: 0px
+    padding: 0px;
+    z-index: -1;
 }
 
 #sidebar {
     position: absolute;
     width: 220px;
-    height: 100%;
     overflow:auto;
     float: left;
     padding-left: 10px;
-    padding-right: 10px; 
+    padding-right: 10px;
+    padding-bottom: 10px;
+    background: #ffffff;
+    margin-left: 20px;
+    margin-top: 20px;
 }
 
-.sidebar-box {
-    background:#e5e5e5;
-    padding:10px
+#step1 {
+    
+}
+
+#step2 {
+    display: none;
+}
+
+.steps {
+    font-size: 20px;
+    padding: 0px;
 }
 
 

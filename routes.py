@@ -107,11 +107,6 @@ def create_geojson(route_object, route_id):
     print js_file
     print type(js_file)
     return json.dumps(js_file)
-
-#@app.route('/route', methods=["POST"])
-#def ajax_call():
-#    print request.form
-#    return "helllllllooo"
     
 if __name__ == '__main__':
     app.run(debug=True, port=5001)

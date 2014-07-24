@@ -2,9 +2,11 @@
 var map;
 var geocoder;
 var i;
-var routeArray = [];
 var lat;
 var lng;
+// following two variables are for direction calculation
+var directionsDisplay; 
+var directionsService = new google.maps.DirectionsService();
 
 // Console log.
 function trace(message) {
@@ -15,6 +17,7 @@ function trace(message) {
 
 // Create the map.
 function initialize() {
+    directionsDisplay = new google.maps.DirectionsRenderer();
     var oakland = new google.maps.LatLng(37.8, -122.2);
     var mapOptions = {
         zoom: 13,
@@ -23,6 +26,25 @@ function initialize() {
     };
     map = new google.maps.Map(document.getElementById('map-canvas'),
                               mapOptions);
+    directionsDisplay.setMap(map);
+}
+
+// TEST - Calculating directions.
+function calcRoute() {
+    var start = '37.8044, -122.2708';
+    var end = '37.8717, -122.2728';
+    var request = {
+  origin: start,
+  destination: end,
+  travelMode: google.maps.TravelMode.WALKING,
+  unitSystem: google.maps.UnitSystem.IMPERIAL
+};
+    directionsService.route(request, function (response, status) {
+        if (status == google.maps.DirectionsStatus.OK) {
+            directionsDisplay.setDirections(response);
+        }
+    });
+    console.log("Directions calculated")
 }
 
 // Recreate map between routes.
@@ -106,7 +128,6 @@ function showNextRoute(index) {
 // Render route.
 function renderRoute(js_file) {
     // Load the GeoJSON ((monster stomp)).
-    routeArray.push(js_file);
     map.data.loadGeoJson(js_file);
     // Set the styling.
     var featureStyle = {
@@ -116,9 +137,11 @@ function renderRoute(js_file) {
         };
     map.data.setStyle(featureStyle);
     console.log("Rendering route was successful!");
+    $('#step1').hide();
+    $('#step2').css("display", "block");
 }
 
-// Attempt to clear layers.
+// Set map to null to clear data layer containing previous route.
 function clearLayer() {
     map.data.setMap(null);
     reinitialize();
@@ -133,8 +156,11 @@ $(document).ready(function () {
     });
     $('input#no').bind('click', function () {
         clearLayer();
+
     });
     $('input#yes').bind('click', function () {
+        calcRoute();
+        console.log("Calculating route.")
     });
 });
 
