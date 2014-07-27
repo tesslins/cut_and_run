@@ -22,11 +22,11 @@ ROUTES_OBJECT = None
 def homepage():
     return render_template("index.html")
 
-@app.route('/api_call')
-def call_mmf_api():
+@app.route('/api_call') # call this /api
+def call_mmf_api(): # call this get routes
     '''Search for all routes near latitute-longitude, maximum and minimum
-    distance are optional. Distances currently in meters and default to minimum
-    of 1 mile (1609 meters) and 10 miles (16093 meters). Returned query is
+    distance are optional. Distances currently input in miles and default to minimum
+    of 1 mile (1609 meters) and 10 miles (16093 meters) and converted to meters. Returned query is
     currently global variable. :('''
     print "*****search_route function******"
     lat = request.args.get('lat')
@@ -34,8 +34,10 @@ def call_mmf_api():
     lat_lng = []
     lat_lng.append(lat)
     lat_lng.append(lng)
-    min_distance = request.args.get('minDistance', 1609, type=int) 
-    max_distance = request.args.get('maxDistance', 16093, type=int)
+    min_distance = request.args.get('minDistance', 1, type=int)
+    min_distance = min_distance * 1609.34
+    max_distance = request.args.get('maxDistance', 10, type=int)
+    max_distance = max_distance * 1609.34
     global ROUTES_OBJECT
     ROUTES_OBJECT = mmf.route.search(close_to_location=lat_lng,
                                         minimum_distance=min_distance,

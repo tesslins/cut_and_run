@@ -12,7 +12,6 @@ body {
 #map-canvas {
     height: 100%;
     padding: 0px;
-    z-index: -1;
 }
 
 #sidebar {
@@ -24,8 +23,9 @@ body {
     padding-right: 10px;
     padding-bottom: 10px;
     background: #ffffff;
-    margin-left: 20px;
+    margin-left: 80px;
     margin-top: 20px;
+    z-index: 1
 }
 
 #step1 {
@@ -39,6 +39,10 @@ body {
 .steps {
     font-size: 20px;
     padding: 0px;
+}
+
+#new-route-link {
+    font-size: 14px;
 }
 
 

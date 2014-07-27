@@ -4,9 +4,6 @@ var geocoder;
 var i;
 var lat;
 var lng;
-// following two variables are for direction calculation
-var directionsDisplay; 
-var directionsService = new google.maps.DirectionsService();
 
 // Console log.
 function trace(message) {
@@ -17,34 +14,16 @@ function trace(message) {
 
 // Create the map.
 function initialize() {
-    directionsDisplay = new google.maps.DirectionsRenderer();
     var oakland = new google.maps.LatLng(37.8, -122.2);
     var mapOptions = {
         zoom: 13,
         center: oakland,
-        mapTypeId: google.maps.MapTypeId.TERRAIN
+        mapTypeId: google.maps.MapTypeId.TERRAIN,
+        draggable: true,
+        scrollwheel: true
     };
     map = new google.maps.Map(document.getElementById('map-canvas'),
                               mapOptions);
-    directionsDisplay.setMap(map);
-}
-
-// TEST - Calculating directions.
-function calcRoute() {
-    var start = '37.8044, -122.2708';
-    var end = '37.8717, -122.2728';
-    var request = {
-  origin: start,
-  destination: end,
-  travelMode: google.maps.TravelMode.WALKING,
-  unitSystem: google.maps.UnitSystem.IMPERIAL
-};
-    directionsService.route(request, function (response, status) {
-        if (status == google.maps.DirectionsStatus.OK) {
-            directionsDisplay.setDirections(response);
-        }
-    });
-    console.log("Directions calculated")
 }
 
 // Recreate map between routes.
@@ -57,7 +36,7 @@ function reinitialize() {
     };
     map = new google.maps.Map(document.getElementById('map-canvas'),
                               mapOptions);
-    passIndex();
+    //passIndex();
 }
 
 // Centers map on zip code. Runs on click of "Find A Route" button.
@@ -100,28 +79,17 @@ function submitData(lat, lng) {
     return false;
 }
 
-// Passes index to Python, increments index after call.
+// Passes index to Python to get next route, increments index after call.
 // Runs on click of no button
 var value = 1; // Must be 1, first time is default to 0 (in Python).
-function passIndex() {
-    $.getJSON('/pass_index', {
-        index: value.toString()
-    }, function (index) {
-    // Increments value each time index is passed.
-        showNextRoute(index);
-        console.log(typeof index);
-        value++;
-        console.log('Index passed and value incremented.');
-    });
-}
-// To fix: an increment without Python call, duh! Get rid of this function!
-
-// Get the next route. Runs on click of no button.
-function showNextRoute(index) {
+function showNextRoute() {
     $.getJSON('/create_route', {
-        index: index.toString()
+        index: value.toString()
     }, function (js_file) {
         renderRoute(js_file);
+        console.log(index);
+        value++;
+        console.log('Index passed and value incremented.');
     });
 }
 
@@ -159,8 +127,6 @@ $(document).ready(function () {
 
     });
     $('input#yes').bind('click', function () {
-        calcRoute();
-        console.log("Calculating route.")
     });
 });
 

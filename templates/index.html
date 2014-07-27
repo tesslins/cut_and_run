@@ -2,7 +2,7 @@
 <title>{% block title %}mapmpamap{% endblock %}</title>
 {% block sidebar_div %}
 <div id = "sidebar" >
-  <div id="step1"> <!-- this div is for zip code search box -->
+  <div id="step1"> 
   <h1 class="steps">step 1 (the search)</h1>
       <input type="text" placeholder="enter zipcode pls" id="address" name="address">
       <input
@@ -10,19 +10,22 @@
         placeholder="minimum distance"
         id="min_distance"
         name="min_distance">
-        <label for="min_distance">meters</label>
+        <label for="min_distance">miles</label>
       <input
         type="text"
         placeholder="maximum distance"
         id="max_distance"
         name="max_distance">
-        <label for="min_distance">meters</label>
+        <label for="min_distance">miles</label>
       <input type="button" value="find routes" id="render" />
     </div>
-    <div id="step2"> <!-- this div is for yes/no buttons -->
+    <div id="step2"> 
       <h1 class="steps">step 2 (the choice)</h1>
       <input type="button" value="yes!" id="yes" />
       <input type="button" value="nope" id="no" />
+      <p><a id="new-route-link"
+            href="localhost:5001">psych! do a new route search</a></p>
+            <!--call js function reinitialize? different way than href?-->
     </div>
 </div>
 {% endblock %}
