@@ -48,13 +48,6 @@ def call_mmf_api(): # call this get routes
     else:
         print "Warning! No routes returned from MapMyFitness API."
         
-@app.route('/pass_index')
-def pass_index():
-    ''' Retrives index from javascript for incrementing through routes.'''
-    print "*****pass_index function******"
-    index = request.args.get('index', 0) 
-    return json.dumps(index)
-    
 @app.route('/create_route')
 def create_route_object():
     '''Returns single route object from routes object.'''
@@ -66,17 +59,11 @@ def create_route_object():
     page_range = ROUTES_OBJECT.page_range
     page_num = page_range[0]
     single_page = ROUTES_OBJECT.page(page_num)
-    #index = json.loads(index)
     if type(index) != int:
         index = int(index)
-        route_object = single_page[index]
-        route_id = route_object.id
-        return create_geojson(route_object, route_id)
-    else:
-        route_object = single_page[index]
-        route_id = route_object.id
-        return create_geojson(route_object, route_id)
-
+    route_object = single_page[index]
+    route_id = route_object.id
+    return create_geojson(route_object, route_id)
 
 def create_geojson(route_object, route_id):
     '''Get route points as lat/lng tuples, turn into a geoJSON of lat/lng

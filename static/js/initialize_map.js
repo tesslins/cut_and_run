@@ -16,27 +16,32 @@ function trace(message) {
 function initialize() {
     var oakland = new google.maps.LatLng(37.8, -122.2);
     var mapOptions = {
-        zoom: 13,
+        zoom: 14,
         center: oakland,
-        mapTypeId: google.maps.MapTypeId.TERRAIN,
-        draggable: true,
-        scrollwheel: true
+        mapTypeId: google.maps.MapTypeId.TERRAIN
     };
     map = new google.maps.Map(document.getElementById('map-canvas'),
                               mapOptions);
+}
+
+// Set map to null to clear data layer containing previous route.
+function clearLayer() {
+    map.data.setMap(null);
+    reinitialize();
+    console.log("data layer cleared");
 }
 
 // Recreate map between routes.
 function reinitialize() {
     var center = new google.maps.LatLng(lat, lng);
     var mapOptions = {
-        zoom: 13,
+        zoom: 14,
         center: center,
         mapTypeId: google.maps.MapTypeId.TERRAIN
     };
     map = new google.maps.Map(document.getElementById('map-canvas'),
                               mapOptions);
-    //passIndex();
+    showNextRoute();
 }
 
 // Centers map on zip code. Runs on click of "Find A Route" button.
@@ -87,10 +92,10 @@ function showNextRoute() {
         index: value.toString()
     }, function (js_file) {
         renderRoute(js_file);
-        console.log(index);
-        value++;
         console.log('Index passed and value incremented.');
     });
+    value++;
+    console.log(value);
 }
 
 // Render route.
@@ -109,13 +114,7 @@ function renderRoute(js_file) {
     $('#step2').css("display", "block");
 }
 
-// Set map to null to clear data layer containing previous route.
-function clearLayer() {
-    map.data.setMap(null);
-    reinitialize();
-    console.log("data layer cleared")
-    
-}
+
 
 $(document).ready(function () {
     initialize();
