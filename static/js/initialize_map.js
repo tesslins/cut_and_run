@@ -60,7 +60,7 @@ function centerMap() {
                 console.log("centerMap function not working!");
             }
         } else {
-            alert(
+            console.log(
                 "centerMap function was not successful because: "
                     + status
             );
@@ -72,14 +72,19 @@ function centerMap() {
 // Call to Python for initial MapMyFitness API call.
 // Runs on completion of centerMap function.
 function submitData(lat, lng) {
-    $.getJSON('/api_call', {
+    $.getJSON('/api', {
         lat: lat.toString(),
         lng: lng.toString(),
         minDistance: $('input[name="min_distance"]').val(),
         maxDistance: $('input[name="max_distance"]').val()
-    }, function (js_file) {
-        renderRoute(js_file);
-        console.log("MapMyFitness API call was successful.");
+    }, function (returnString) {
+        console.log(returnString)
+        console.log(typeof returnString)
+        if (returnString === "Carry on javascript!") {
+            console.log("MapMyFitness API call was successful.");
+        } else {
+            console.log("HOLD UP! MapMyFitness API call not successful.");
+        }
     });
     return false;
 }
@@ -112,9 +117,27 @@ function renderRoute(js_file) {
     console.log("Rendering route was successful!");
     $('#step1').hide();
     $('#step2').css("display", "block");
+    addMarkers();
+}
+
+// Add route beginning and end marker.
+function addMarkers() {
+    var startLatLng = new google.maps.LatLng(lat, lng);
+    var endLatLng = new google.maps.LatLng(lat, lng);
+    var startMarker = new google.maps.Marker({
+            position: startLatLng,
+            map: map,
+            title: "start"
+        });
+    var endMarker = new google.maps.Marker({
+            position: endLatLng,
+            map: map,
+            title: "end"
+        });
 }
 
 
+// Add route distance.
 
 $(document).ready(function () {
     initialize();
