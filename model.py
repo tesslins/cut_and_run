@@ -23,7 +23,6 @@ class Route(Base):
     search_lat = Column(Unicode)
     search_lng = Column(Unicode)
     name = Column(Unicode)
-    description = Column(Unicode)
     distance = Column(Float)
     ascent = Column(Float)
     descent = Column(Float)
@@ -31,6 +30,23 @@ class Route(Base):
     max_elevation = Column(Float)
     city = Column(Unicode)
     state = Column(Unicode)
+    route_points_geojson = Column(String)
+    
+    def __init__(self, route_id, search_lat, search_lng, name, distance,
+                 ascent, descent, min_elevation, max_elevation, city,
+                 state, route_points_geojson):
+        self.route_id = route_id
+        self.search_lat = search_lat
+        self.search_lng = search_lng
+        self.name = name
+        self.distance = distance
+        self.ascent = ascent
+        self.descent = descent
+        self.min_elevation = min_elevation
+        self.max_elevation = max_elevation
+        self.city = city
+        self.state = state
+        self.route_points_geojson = route_points_geojson
 
 def main():
     pass

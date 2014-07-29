@@ -6,6 +6,7 @@ from mapmyfitness import MapMyFitness
 import requests
 import requests.auth
 import json
+import geojson
 import model
 
 app = Flask(__name__, static_url_path='')
@@ -60,8 +61,6 @@ def create_route_object(routes_object, lat, lng):
         search_lng = lng
         if route.name:
             name = route.name # <type 'unicode'>
-        if route.description:
-            description = route.description # <type 'unicode'>
         if route.distance:
             distance = route.distance # <type 'float'>
         if route.ascent:
@@ -91,12 +90,18 @@ def create_route_object(routes_object, lat, lng):
                             }]
                             }
         route_points_geojson['features'][0]['geometry'] = route_points
+        # !! json vs geojson for dump?..same result I believe !!
+        # !! used unicode(geojson.dumps()) to write to file
+        route_points_geojson = geojson.dumps(route_points_geojson,
+                                             ensure_ascii=False)
         
-        route = model.Route(route_id, search_lat, search_lng, name, description,
+        route = model.Route(route_id, search_lat, search_lng, name,
                            distance, ascent, descent, min_elevation,
-                           max_elevation, city, state)
+                           max_elevation, city, state, route_points_geojson)
         model.session.add(route)
+        print "route added to session"
         model.session.commit()
+        print "route committed"
         
 if __name__ == '__main__':
     app.run(debug=True, port=5001)
