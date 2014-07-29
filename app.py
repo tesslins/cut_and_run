@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-from flask import Flask, abort, request, render_template, jsonify
+from flask import Flask, abort, request, render_template, jsonify,  session
 from flask.views import View
 from flask.ext.sqlalchemy import SQLAlchemy
 from mapmyfitness import MapMyFitness
@@ -9,10 +9,6 @@ import json
 import model
 
 app = Flask(__name__, static_url_path='')
-
-@app.teardown_appcontext
-def shutdown_session(exception=None):
-    model.session.remove()
 
 mapmyfitness = MapMyFitness(api_key='hhp3ye7mq97jnuz8rxfzwc3fz39ef3rp',
                     access_token='4636bdf2cb0b82b456a855808925c42b67cab7ae')
