@@ -1,130 +1,154 @@
-// Declare the map & geocoder and always console log.
+// Declare the map & geocoder & feature.
 var map;
 var geocoder;
+var i;
+var lat;
+var lng;
 
-function trace(message) 
-{
-    if (typeof console != 'undefined') 
-    {
+// Console log.
+function trace(message) {
+    if (typeof console !== 'undefined') {
         console.log(message);
     }
 }
 
 // Create the map.
-function initialize () {
-  var oakland = new google.maps.LatLng(37.8,-122.2);
-  var mapOptions = {
-    zoom: 8,
-    center: oakland,
-    mapTypeId: google.maps.MapTypeId.TERRAIN 
-  };
-  map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+function initialize() {
+    var oakland = new google.maps.LatLng(37.8, -122.2);
+    var mapOptions = {
+        zoom: 14,
+        center: oakland,
+        mapTypeId: google.maps.MapTypeId.TERRAIN
+    };
+    map = new google.maps.Map(document.getElementById('map-canvas'),
+                              mapOptions);
+}
+
+// Set map to null to clear data layer containing previous route.
+function clearLayer() {
+    map.data.setMap(null);
+    reinitialize();
+    console.log("data layer cleared");
+}
+
+// Recreate map between routes.
+function reinitialize() {
+    var center = new google.maps.LatLng(lat, lng);
+    var mapOptions = {
+        zoom: 14,
+        center: center,
+        mapTypeId: google.maps.MapTypeId.TERRAIN
+    };
+    map = new google.maps.Map(document.getElementById('map-canvas'),
+                              mapOptions);
+    showNextRoute();
 }
 
 // Centers map on zip code. Runs on click of "Find A Route" button.
 geocoder = new google.maps.Geocoder();
-
-function centerMap () {
-  var address = $('#address').val();
-  geocoder.geocode( { 'address': address}, function(results, status) {
-      if (status == google.maps.GeocoderStatus.OK) {
-        if (results[0]) {
-          var googleLatLng = results[0].geometry.location;
-          var lat = results[0].geometry.location.lat();
-          var lng = results[0].geometry.location.lng();
-          map.setCenter(googleLatLng);
-          submitdata(lat,lng);
+function centerMap() {
+    var address = $('#address').val();
+    geocoder.geocode({ 'address': address}, function (results, status) {
+        if (status === google.maps.GeocoderStatus.OK) {
+            if (results[0]) {
+                var googleLatLng = results[0].geometry.location;
+                lat = results[0].geometry.location.lat();
+                lng = results[0].geometry.location.lng();
+                map.setCenter(googleLatLng);
+                submitData(lat, lng);
+            } else {
+                console.log("centerMap function not working!");
+            }
+        } else {
+            console.log(
+                "centerMap function was not successful because: "
+                    + status
+            );
         }
-        else {
-          console.log("centerMap function not working!")
+    });
+}
+// To fix: Need to add a check to ensure that this is a real US zip code.
+
+// Call to Python for initial MapMyFitness API call.
+// Runs on completion of centerMap function.
+function submitData(lat, lng) {
+    $.getJSON('/api', {
+        lat: lat.toString(),
+        lng: lng.toString(),
+        minDistance: $('input[name="min_distance"]').val(),
+        maxDistance: $('input[name="max_distance"]').val()
+    }, function (returnString) {
+        console.log(returnString)
+        console.log(typeof returnString)
+        if (returnString === "Carry on javascript!") {
+            console.log("MapMyFitness API call was successful.");
+        } else {
+            console.log("HOLD UP! MapMyFitness API call not successful.");
         }
-      } 
-      else 
-      {
-        alert("centerMap function was not successful for the following reason: " + status);
-      }
-  });
-}
-// Need to add a check to ensure that this is a real address - 94616 sent me to eastern Europe?
-
-// Call to Python for initial MapMyFitness API call. Runs on click of "Find A Route" button.
-function submitdata (lat,lng) {
-  $.getJSON('/api_call', {
-    lat: lat.toString(),
-    lng: lng.toString(),
-    minDistance: $('input[name="min_distance"]').val(),
-    maxDistance: $('input[name="max_distance"]').val(),
-}, function(routeJson) {
-    // Return routesObject to Javascript, call showNextRoute to get Index variable. Do I need to pass variable to access it in a different function?
-    renderRoute(routeJson);
-    console.log("MapMyFitness API call was successful!");
-});
-return false;
+    });
+    return false;
 }
 
-// Passes index to Python, increments index after call. Runs on click of no button
-function passIndex() {
-  //var value = parseInt(document.getElementById('no').value, 0);
-  //value = isNaN(value) ? 0 : value;
-  //value++;
-  //document.getElementById('number').value = value;
-  $.getJSON('/pass_index', {
-    index: value.toString(),
-  }, function(index) {
-    // Increments each time index is passed, aka each time a new route object is created.
-    console.log(index);
-    console.log('index before increment');
-    index = index + 1;
-    console.log("index after increment");
-    console.log(index);
-  });
-}
-
-// Get the next route. Runs on click of no button.
+// Passes index to Python to get next route, increments index after call.
+// Runs on click of no button
+var value = 1; // Must be 1, first time is default to 0 (in Python).
 function showNextRoute() {
-  $.getJSON('/create_route' , {
-    getroute: 'yesplease'
-  } , function(routeJson) {
-    renderRoute(routeJson);
-  });
+    $.getJSON('/create_route', {
+        index: value.toString()
+    }, function (js_file) {
+        renderRoute(js_file);
+        console.log('Index passed and value incremented.');
+    });
+    value++;
+    console.log(value);
 }
-                                
+
 // Render route.
-function renderRoute (routeJson) {
-  // Load the GeoJSON ((monster stomp)).
-  var pyGeoJson = routeJson;
-  console.log(pyGeoJson);
-  var staticGeoJson = 'js/geoJSON_route_Oakland.json';
-  console.log(staticGeoJson);
-  map.data.loadGeoJson(staticGeoJson);
-  // Set the styling.
-   var featureStyle = {
-   fillColor: 'green',
-   strokeWeight: 10
-   }
-  map.data.setStyle(featureStyle);
-  console.log("Rendering route was successful!")
+function renderRoute(js_file) {
+    // Load the GeoJSON ((monster stomp)).
+    map.data.loadGeoJson(js_file);
+    // Set the styling.
+    var featureStyle = {
+            strokeColor: 'green',
+            strokeWeight: 10,
+            strokeOpacity: 0.5
+        };
+    map.data.setStyle(featureStyle);
+    console.log("Rendering route was successful!");
+    $('#step1').hide();
+    $('#step2').css("display", "block");
+    addMarkers();
 }
 
-// Stores route in the session. Runs on the click of yes button.
+// Add route beginning and end marker.
+function addMarkers() {
+    var startLatLng = new google.maps.LatLng(lat, lng);
+    var endLatLng = new google.maps.LatLng(lat, lng);
+    var startMarker = new google.maps.Marker({
+            position: startLatLng,
+            map: map,
+            title: "start"
+        });
+    var endMarker = new google.maps.Marker({
+            position: endLatLng,
+            map: map,
+            title: "end"
+        });
+}
 
-  
-  $(document).ready(function() {
+
+// Add route distance.
+
+$(document).ready(function () {
     initialize();
-    
-    $('input#render').bind('click', function() {
-      centerMap();
+    $('input#render').bind('click', function () {
+        centerMap();
     });
-    
-    $('input#no').bind('click', function() { 
-      passIndex();
-      console.log("passIndex called");
-      showNextRoute();
-      console.log("showNextRoute called")
+    $('input#no').bind('click', function () {
+        clearLayer();
+
     });
-    
-    $('input#yes').bind('click', function() {
-      
+    $('input#yes').bind('click', function () {
     });
-  });
+});
 
