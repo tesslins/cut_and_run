@@ -27,88 +27,77 @@ def get_routes():
     into database table, post-processed data is also entered in seperate table.
     '''
     print "*****get_routes function******"
-    lat = request.args.get('lat')
-    lng = request.args.get('lng')
+    lat = request.args.get('lat') # lat comes in as type: unicode
+    lng = request.args.get('lng') # lng comes in as type: unicode
     lat_lng = []
     lat_lng.append(lat)
     lat_lng.append(lng)
-    min_distance = request.args.get('minDistance', 1, type=int)
-    min_distance = min_distance * 1609.34
-    max_distance = request.args.get('maxDistance', 10, type=int)
-    max_distance = max_distance * 1609.34
+    min_distance = (request.args.get('minDistance', 1, type=int)) * 1609.34
+    max_distance = (request.args.get('maxDistance', 10, type=int)) * 1609.34
     routes_object = mapmyfitness.route.search(close_to_location=lat_lng,
                                         minimum_distance=min_distance,
                                         maximum_distance=max_distance)
-    #page_range = routes_object.page_range
-    #page_num = page_range[0]
-    #single_page = routes_object.page(page_num)
-    #i = 0
-    #for route in routes_object: #unpack each route into a database
-    #    route_object = single_page[i]
-    #    i += 1
     if routes_object: # and hasattr(routes_object, 'page_range')
         print "MapMyFitness API call made."
-        lat_lng = str(lat_lng)
-        routes = model.RouteObject(lat_lng = lat_lng)
-                                   #min_distance=min_distance,
-                                   #max_distance=max_distance,
-                                   #routes_object=routes_object
-        model.session.add(routes)
-        model.session.commit()
-        print "Routes object committed to database."
+        create_route_object(routes_object, lat, lng)
         return "Carry on javascript!"
     else:
         print "Warning! No routes returned from MapMyFitness API."
-        
-@app.route('/create_route')
-def create_route_object():
-    '''Returns route from database.'''
-    print "*****create_route_object function******"
-    # figure a better way to call this so it's not just the first page?
-    # although perhaps 40 = enough?
-    global ROUTES_OBJECT
-    index = request.args.get('index', 0)
-    page_range = ROUTES_OBJECT.page_range
-    page_num = page_range[0]
-    single_page = ROUTES_OBJECT.page(page_num)
-    if type(index) != int:
-        index = int(index)
-    route_object = single_page[index]
-    route_id = route_object.id
-    return create_geojson(route_object, route_id)
 
-def create_geojson(route_object, route_id):
-    '''Get route points as lat/lng tuples, turn into a geoJSON of lat/lng
-    lists.'''
-    print "*****create_geojson function******"
-    route_points = route_object.points(geojson=True)
-    #this ALMOST creates a geoJSON, requires the next 3 lines to actually get
-    #to necessary format  
-    lat_lng_tuples = route_points['coordinates']
-    lat_lng_lists = [list(point) for point in lat_lng_tuples]
-    route_points['coordinates'] = lat_lng_lists
-    route_points_geojson = {
-        "type": "FeatureCollection",
-        "features": [{
-        "type": "Feature",
-        "geometry": {
-        # route_points inserted here
-        }
-        }
-        ]
-    }
-    route_points_geojson['features'][0]['geometry'] = route_points
-    #route_points_geojson = str(route_points_geojson)
-    py_file = 'static/js/' + str(route_id) + '.json'
-    with io.open(py_file, 'w', encoding='utf-8') as f:
-        f.write(unicode(geojson.dumps(route_points_geojson,
-                                      ensure_ascii=False)))
-    f.close()
-    js_file = 'js/' + str(route_id) + '.json'
-    print js_file
-    print type(js_file)
-    return json.dumps(js_file)
-    
+def create_route_object(routes_object, lat, lng):
+    '''Creates single route objects, pulls route_id and route_geojson.'''
+    print "*****create_route_object function******"
+    total_count = routes_object.count
+    page_range = routes_object.page_range
+    single_page = page_range[0]
+    the_page = routes_object.page(single_page)
+    for route in the_page:
+        # add route to database here! just using first page (max 40) for now.
+        # !! weird bug with moving on to second page !!
+        if route.id:
+            route_id = route.id # <type 'int'>
+        search_lat = lat
+        search_lng = lng
+        if route.name:
+            name = route.name # <type 'unicode'>
+        if route.description:
+            description = route.description # <type 'unicode'>
+        if route.distance:
+            distance = route.distance # <type 'float'>
+        if route.ascent:
+            ascent = route.ascent # <type 'float'>
+        if route.descent:
+            descent = route.descent # <type 'float'>
+        if route.min_elevation:
+            min_elevation = route.min_elevation # <type 'float'>
+        if route.max_elevation:
+            max_elevation = route.max_elevation # <type 'float'>
+        if route.city:
+            city = route.city # <type 'unicode'>
+        if route.state:
+            state = route.state # <type 'unicode'>
+        route_points = route.points(geojson=True)
+        # previous line ALMOST creates a geoJSON, requires the next 3 lines
+        lat_lng_tuples = route_points['coordinates']
+        lat_lng_lists = [list(point) for point in lat_lng_tuples]
+        route_points['coordinates'] = lat_lng_lists
+        route_points_geojson = {
+                                "type": "FeatureCollection",
+                                "features": [{
+                                "type": "Feature",
+                                "geometry": {
+                                # route_points inserted here
+                                }
+                            }]
+                            }
+        route_points_geojson['features'][0]['geometry'] = route_points
+        
+        route = model.Route(route_id, search_lat, search_lng, name, description,
+                           distance, ascent, descent, min_elevation,
+                           max_elevation, city, state)
+        model.session.add(route)
+        model.session.commit()
+        
 if __name__ == '__main__':
     app.run(debug=True, port=5001)
 
