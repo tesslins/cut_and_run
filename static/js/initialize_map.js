@@ -4,6 +4,8 @@ var geocoder;
 var i;
 var lat;
 var lng;
+var route_ids; // list from API call
+var route_id;
 
 // Console log.
 function trace(message) {
@@ -67,9 +69,9 @@ function centerMap() {
         }
     });
 }
-// To fix: Need to add a check to ensure that this is a real US zip code.
+// To fix: Need to add a check to ensure that this is a real location.
 
-// Call to Python for initial MapMyFitness API call.
+// Ajax call for initial MapMyFitness API call, returns list of route ids
 // Runs on completion of centerMap function.
 function submitData(lat, lng) {
     $.getJSON('/api', {
@@ -77,65 +79,68 @@ function submitData(lat, lng) {
         lng: lng.toString(),
         minDistance: $('input[name="min_distance"]').val(),
         maxDistance: $('input[name="max_distance"]').val()
-    }, function (returnString) {
-        console.log(returnString)
-        console.log(typeof returnString)
-        if (returnString === "Carry on javascript!") {
-            console.log("MapMyFitness API call was successful.");
-        } else {
-            console.log("HOLD UP! MapMyFitness API call not successful.");
-        }
+    }, function (routes) {
+        route_ids = routes; // route_ids is an object
+        // ?? need route_ids to be string or list instead of object ??
+        console.log(route_ids)
+        console.log(typeof route_ids)
+        showNextRoute();
     });
     return false;
 }
 
-// Passes index to Python to get next route, increments index after call.
+// Defines route id to use for renderRoute ajax call. Increments index.
 // Runs on click of no button
-var value = 1; // Must be 1, first time is default to 0 (in Python).
+var index = 0;
 function showNextRoute() {
-    $.getJSON('/create_route', {
-        index: value.toString()
-    }, function (js_file) {
-        renderRoute(js_file);
-        console.log('Index passed and value incremented.');
-    });
-    value++;
-    console.log(value);
+    route_id = route_ids[index]; // route_id is a number
+    route_id = route_id.toString();
+    index++;
+    renderRoute();
 }
 
-// Render route.
-function renderRoute(js_file) {
-    // Load the GeoJSON ((monster stomp)).
-    map.data.loadGeoJson(js_file);
-    // Set the styling.
-    var featureStyle = {
+// Ajax call to get route from database and render route.
+function renderRoute() {
+    console.log("in renderRoute")
+    $.getJSON('/route', {
+        route_id: route_id
+    }, function (ok_to_go) {
+        url = 'localhost:5001/route';
+        console.log(url);
+        // Load the GeoJSON ((monster stomp)).
+        map.data.loadGeoJson(url);
+        // Set the styling.
+        var featureStyle = {
             strokeColor: 'green',
             strokeWeight: 10,
             strokeOpacity: 0.5
         };
-    map.data.setStyle(featureStyle);
-    console.log("Rendering route was successful!");
-    $('#step1').hide();
-    $('#step2').css("display", "block");
-    addMarkers();
+        map.data.setStyle(featureStyle);
+        console.log("Rendering route was successful!");
+        $('#step1').hide();
+        $('#step2').css("display", "block");
+        addMarkers();
+    });
 }
 
-// Add route beginning and end marker.
+// Add route beginning and end markers.
+var image;
 function addMarkers() {
     var startLatLng = new google.maps.LatLng(lat, lng);
     var endLatLng = new google.maps.LatLng(lat, lng);
     var startMarker = new google.maps.Marker({
             position: startLatLng,
             map: map,
-            title: "start"
+            title: "start",
+            icon: image
         });
     var endMarker = new google.maps.Marker({
             position: endLatLng,
             map: map,
-            title: "end"
+            title: "end",
+            visible: true
         });
 }
-
 
 // Add route distance.
 

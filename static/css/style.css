@@ -6,7 +6,7 @@ body {
     height: 100%;
     margin: 0;
     padding: 0;
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: Dosis, Arial, Helvetica, sans-serif;
 }
 
 #map-canvas {
@@ -14,30 +14,50 @@ body {
     padding: 0px;
 }
 
+
 #sidebar {
     position: absolute;
-    width: 220px;
+    width: 100%;
+    height: 150px;
+    text-align: center;
     overflow:auto;
     float: left;
     padding-left: 10px;
     padding-right: 10px;
     padding-bottom: 10px;
     background: #ffffff;
-    margin-left: 80px;
-    margin-top: 20px;
+    /*background: linear-gradient(to right, rgba(255,255,255,0), rgba(255,255,255,1));*/
+    /*maybe add fade in/out on each side*/
+    opacity: 0.95;
+    /*margin-left: 80px;*/
+    margin-top: 425px;
     z-index: 1
 }
 
-#step1 {
-    
+#step1 {  
 }
 
 #step2 {
     display: none;
 }
 
+#render {
+    width: 70px;
+    height: 40px;
+    background-color: #CCFFCC;
+    /*moz-border-radius: 15px;*/ /*came with button styling template */ 
+    -webkit-border-radius: 15px;
+    border: 1px solid #85C285;
+    padding: 5px;
+    
+}
+
+#render:hover {
+    background: #85C285;
+}
+
 .steps {
-    font-size: 20px;
+    font-size: 24px;
     padding: 0px;
 }
 

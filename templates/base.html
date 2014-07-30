@@ -5,6 +5,9 @@
       <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
       <meta charset="utf-8" />
       <link rel="stylesheet" type="text/css" href="css/style.css" />
+      <link href='http://fonts.googleapis.com/css?family=Dosis:300,400'
+            rel='stylesheet'
+            type='text/css'>
       <title>{% block title %}base{% endblock %}</title>
       <!-- Google Maps & Places API -->
       <script
@@ -21,7 +24,9 @@
       {% endblock %}
     </head>
     <body>
+      {% block body %}
       {% block sidebar_div %}
+      {% endblock %}
       {% endblock %}
       <div id="map-canvas"></div>
     </body>

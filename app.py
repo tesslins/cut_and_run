@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-from flask import Flask, abort, request, render_template, jsonify,  session
+from flask import Flask, abort, request, render_template, jsonify, session, url_for
 from flask.views import View
 from flask.ext.sqlalchemy import SQLAlchemy
 from mapmyfitness import MapMyFitness
@@ -33,21 +33,22 @@ def get_routes():
     lat_lng = []
     lat_lng.append(lat)
     lat_lng.append(lng)
-    min_distance = (request.args.get('minDistance', 1, type=int)) * 1609.34
-    max_distance = (request.args.get('maxDistance', 10, type=int)) * 1609.34
+    conversion = 1609.34 # convert miles to meters
+    min_distance = (request.args.get('minDistance', 1, type=int)) * conversion
+    max_distance = (request.args.get('maxDistance', 10, type=int)) * conversion
     routes_object = mapmyfitness.route.search(close_to_location=lat_lng,
                                         minimum_distance=min_distance,
                                         maximum_distance=max_distance)
     if routes_object: # and hasattr(routes_object, 'page_range')
         print "MapMyFitness API call made."
-        create_route_object(routes_object, lat, lng)
-        return "Carry on javascript!"
+        return create_route(routes_object, lat, lng)
     else:
         print "Warning! No routes returned from MapMyFitness API."
 
-def create_route_object(routes_object, lat, lng):
-    '''Creates single route objects, pulls route_id and route_geojson.'''
+def create_route(routes_object, lat, lng):
+    '''Enters routes as database rows.'''
     print "*****create_route_object function******"
+    route_ids = [] #send to javascript for database queries
     total_count = routes_object.count
     page_range = routes_object.page_range
     single_page = page_range[0]
@@ -57,6 +58,7 @@ def create_route_object(routes_object, lat, lng):
         # !! weird bug with moving on to second page !!
         if route.id:
             route_id = route.id # <type 'int'>
+            route_ids.append(route_id)
         search_lat = lat
         search_lng = lng
         if route.name:
@@ -98,10 +100,19 @@ def create_route_object(routes_object, lat, lng):
         route = model.Route(route_id, search_lat, search_lng, name,
                            distance, ascent, descent, min_elevation,
                            max_elevation, city, state, route_points_geojson)
-        model.session.add(route)
-        print "route added to session"
-        model.session.commit()
-        print "route committed"
+        # !! add a check to make sure route_id is not already in db !!
+        # model.session.add(route)
+        # print "route added to session"
+        # model.session.commit()
+        # print "route committed"
+    return json.dumps(route_ids)
+
+@app.route('/route') # '/route/<route_id>'
+def query_db():
+    '''Query database by route_id to get geoJSON to URL.'''
+    route_id = request.args.get('route_id')
+    r = model.session.query(model.Route).filter_by(route_id = route_id).first()
+    return r.route_points_geojson
         
 if __name__ == '__main__':
     app.run(debug=True, port=5001)
