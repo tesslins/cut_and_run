@@ -8,6 +8,7 @@ import requests.auth
 import json
 import geojson
 import model
+import pdb #pdb.set_trace()
 
 app = Flask(__name__, static_url_path='')
 
@@ -107,10 +108,12 @@ def create_route(routes_object, lat, lng):
         # print "route committed"
     return json.dumps(route_ids)
 
-@app.route('/route') # '/route/<route_id>'
-def query_db():
+@app.route('/route/<route_id>') # '/route/<route_id>'
+def query_db(route_id):
     '''Query database by route_id to get geoJSON to URL.'''
-    route_id = request.args.get('route_id')
+    route_id = int(route_id)
+    print route_id
+    print type(route_id)
     r = model.session.query(model.Route).filter_by(route_id = route_id).first()
     return r.route_points_geojson
         
