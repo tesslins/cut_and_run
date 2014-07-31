@@ -102,7 +102,7 @@ function showNextRoute() {
 // Ajax call to get route from database and render route.
 function renderRoute() {
     console.log("in renderRoute");
-    route_id = 152719841;
+    route_id = route_id;
     // Load the GeoJSON ((monster stomp)).
     map.data.loadGeoJson("/route/" + route_id);
     // Set the styling.

@@ -18,7 +18,7 @@ body {
 #sidebar {
     position: absolute;
     width: 100%;
-    height: 175px;
+    height: 150px;
     text-align: center;
     overflow:auto;
     float: left;
@@ -55,19 +55,30 @@ body {
 
 #render:hover {
     background: #85C285;
+}
 
 /* this is the no button */    
 #no {
-    width: 70px;
+    width: 110px;
     height: 40px;
-    background-color: #CCFFCC;
+    background-color: #F2AAB6;
+    /*moz-border-radius: 15px;*/ /*came with button styling template */ 
+    -webkit-border-radius: 15px;
+    border: 1px solid #E83152;
+    padding: 5px;
+    margin: 5px;
 }
 
 /* this is the yes button */
 #yes {
-    width: 70px;
+    width: 110px;
     height: 40px;
     background-color: #CCFFCC;
+    /*moz-border-radius: 15px;*/ /*came with button styling template */ 
+    -webkit-border-radius: 15px;
+    border: 1px solid #85C285;
+    padding: 5px;
+    margin: 5px;
 }
 
 .steps {
@@ -76,8 +87,8 @@ body {
 }
 
 #new-route-link {
-    font-size: 30px;
-    color: #A7ECF0;
+    font-size: 16px;
+    color: #74C0C4
 }
 
 

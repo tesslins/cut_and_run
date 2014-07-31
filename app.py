@@ -102,10 +102,10 @@ def create_route(routes_object, lat, lng):
                            distance, ascent, descent, min_elevation,
                            max_elevation, city, state, route_points_geojson)
         # !! add a check to make sure route_id is not already in db !!
-        # model.session.add(route)
-        # print "route added to session"
-        # model.session.commit()
-        # print "route committed"
+        model.session.add(route)
+        print "route added to session"
+        model.session.commit()
+        print "route committed"
     return json.dumps(route_ids)
 
 @app.route('/route/<route_id>') # '/route/<route_id>'
