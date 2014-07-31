@@ -47,7 +47,7 @@ def get_routes():
         print "Warning! No routes returned from MapMyFitness API."
 
 def create_route(routes_object, lat, lng):
-    '''Enters routes as database rows.'''
+    '''Add and commit routes as database rows.'''
     print "*****create_route_object function******"
     route_ids = [] #send to javascript for database queries
     total_count = routes_object.count
@@ -83,6 +83,11 @@ def create_route(routes_object, lat, lng):
         lat_lng_tuples = route_points['coordinates']
         lat_lng_lists = [list(point) for point in lat_lng_tuples]
         route_points['coordinates'] = lat_lng_lists
+        start_lat = lat_lng_lists[0][0]
+        start_lng = lat_lng_lists[0][-1]
+        end_lat = lat_lng_lists[-1][0]
+        end_lng = lat_lng_lists[-1][-1]
+        # !! need to write check if start == end, it is a loop
         route_points_geojson = {
                                 "type": "FeatureCollection",
                                 "features": [{
@@ -94,13 +99,12 @@ def create_route(routes_object, lat, lng):
                             }
         route_points_geojson['features'][0]['geometry'] = route_points
         # !! json vs geojson for dump?..same result I believe !!
-        # !! used unicode(geojson.dumps()) to write to file
         route_points_geojson = geojson.dumps(route_points_geojson,
                                              ensure_ascii=False)
-        
         route = model.Route(route_id, search_lat, search_lng, name,
                            distance, ascent, descent, min_elevation,
-                           max_elevation, city, state, route_points_geojson)
+                           max_elevation, city, state, route_points_geojson,
+                           start_lat, start_lng, end_lat, end_lng)
         # !! add a check to make sure route_id is not already in db !!
         model.session.add(route)
         print "route added to session"
@@ -108,14 +112,21 @@ def create_route(routes_object, lat, lng):
         print "route committed"
     return json.dumps(route_ids)
 
-@app.route('/route/<route_id>') # '/route/<route_id>'
+@app.route('/route/<route_id>')
 def query_db(route_id):
     '''Query database by route_id to get geoJSON to URL.'''
     route_id = int(route_id)
-    print route_id
-    print type(route_id)
     r = model.session.query(model.Route).filter_by(route_id = route_id).first()
     return r.route_points_geojson
+
+@app.route('/markers')
+def query_db_markers():
+    '''Query database by route_id to get latitude and longitudes for start and
+    end markers.'''
+    route_id = request.args.get('route_id')
+    r = model.session.query(model.Route).filter_by(route_id = route_id).first()
+    return json.dumps(r.start_lat, r.start_lng, r.end_lat, r.end_lng)
+    
         
 if __name__ == '__main__':
     app.run(debug=True, port=5001)

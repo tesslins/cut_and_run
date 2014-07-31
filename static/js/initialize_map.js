@@ -4,8 +4,9 @@ var geocoder;
 var i;
 var lat;
 var lng;
-var route_ids; // list from API call
-var route_id;
+var routeIds; // list from API call
+var routeId;
+
 
 // Console log.
 function trace(message) {
@@ -79,11 +80,10 @@ function submitData(lat, lng) {
         lng: lng.toString(),
         minDistance: $('input[name="min_distance"]').val(),
         maxDistance: $('input[name="max_distance"]').val()
-    }, function (routes) {
-        route_ids = routes; // route_ids is an object
-        // ?? need route_ids to be string or list instead of object ??
-        console.log(route_ids)
-        console.log(typeof route_ids)
+    }, function (route_ids) {
+        routeIds = route_ids; // routeIds is an object
+        console.log('API call successful!');
+        console.log(routeIds);
         showNextRoute();
     });
     return false;
@@ -93,8 +93,8 @@ function submitData(lat, lng) {
 // Runs on click of no button
 var index = 0;
 function showNextRoute() {
-    route_id = route_ids[index]; // route_id is a number
-    route_id = route_id.toString();
+    routeId = routeIds[index]; // routeId is a number
+    routeId = routeId.toString();
     index++;
     renderRoute();
 }
@@ -102,9 +102,9 @@ function showNextRoute() {
 // Ajax call to get route from database and render route.
 function renderRoute() {
     console.log("in renderRoute");
-    route_id = route_id;
+    //routeId = routeId;
     // Load the GeoJSON ((monster stomp)).
-    map.data.loadGeoJson("/route/" + route_id);
+    map.data.loadGeoJson("/route/" + routeId);
     // Set the styling.
     var featureStyle = {
         strokeColor: 'green',
@@ -120,26 +120,38 @@ function renderRoute() {
 }
 
 // Add route beginning and end markers.
-var image;
+var startLat;
+var startLng;
+var endLat;
+var endLng;
 var startLatLng;
 var endLatLng;
 var startMarker;
 var endMarker;
+var image; 
 function addMarkers() {
-    startLatLng = new google.maps.LatLng(lat, lng);
-    endLatLng = new google.maps.LatLng(lat, lng);
-    startMarker = new google.maps.Marker({
-        position: startLatLng,
-        map: map,
-        title: "start",
-        icon: image
-    });
-    endMarker = new google.maps.Marker({
-        position: endLatLng,
-        map: map,
-        title: "end",
-        visible: true
+    $.getJSON('/markers', {
+        route_id: routeId.toString()
+    }, function (start_lat, start_lng, end_lat, end_lng) {
+        startLat = parseInt(start_lat);
+        startLng = parseInt(start_lng);
+        endLat = parseInt(end_lat);
+        endLng = parseInt(end_lng);
+        startLatLng = new google.maps.LatLng(start_lat, start_lng);
+        endLatLng = new google.maps.LatLng(end_lat, end_lng);
+        startMarker = new google.maps.Marker({
+            position: startLatLng,
+            map: map,
+            title: "start",
+            icon: image
         });
+        endMarker = new google.maps.Marker({
+            position: endLatLng,
+            map: map,
+            title: "end",
+            visible: true
+        });
+    });
 }
 
 // Add route distance.
