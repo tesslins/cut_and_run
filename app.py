@@ -38,7 +38,6 @@ def get_routes():
     distance = (request.args.get('distance', 5, type=int))
     min_distance = (distance - .5) * conversion
     max_distance = (distance + .5) * conversion
-    pdb.set_trace()
     routes_object = mapmyfitness.route.search(close_to_location=lat_lng,
                                         minimum_distance=min_distance,
                                         maximum_distance=max_distance)
@@ -89,7 +88,7 @@ def create_route(routes_object, lat, lng):
         start_lng = lat_lng_lists[0][-1]
         end_lat = lat_lng_lists[-1][0]
         end_lng = lat_lng_lists[-1][-1]
-        # !! need to write check if start == end, it is a loop
+        # !! need to write check if start == end, it is a loop !!
         route_points_geojson = {
                                 "type": "FeatureCollection",
                                 "features": [{
@@ -100,7 +99,6 @@ def create_route(routes_object, lat, lng):
                             }]
                             }
         route_points_geojson['features'][0]['geometry'] = route_points
-        # !! json vs geojson for dump?..same result I believe !!
         route_points_geojson = geojson.dumps(route_points_geojson,
                                              ensure_ascii=False)
         route = model.Route(route_id, search_lat, search_lng, name,

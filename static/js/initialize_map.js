@@ -78,7 +78,7 @@ function submitData(lat, lng) {
     $.getJSON('/api', {
         lat: lat.toString(),
         lng: lng.toString(),
-        distance: $('input[name="distance"]').val()
+        istance: $('input[name="distance"]').val()
     }, function (route_ids) {
         routeIds = route_ids; // routeIds is an object
         console.log('API call successful!');
@@ -88,7 +88,7 @@ function submitData(lat, lng) {
 }
 
 // Defines route id to use for renderRoute ajax call. Increments index.
-// Runs on click of no button
+// Runs on each click on no button.
 var index = 0;
 function showNextRoute() {
     routeId = routeIds[index]; // routeId is a number
@@ -112,7 +112,9 @@ function renderRoute() {
     
     console.log("Rendering route was successful!");
     $('#step1').hide();
+    $('#logo1').hide();
     $('#step2').css("display", "block");
+    $('#logo2').css("display", "block");
     addMarkers();
 }
 
@@ -151,16 +153,21 @@ function addMarkers() {
     });
 }
 
-// Add route distance.
+// Runs on click of yes button.
 
 $(document).ready(function () {
     initialize();
+    $body = $("body");
+
+    $(document).on({
+        ajaxStart: function () { $body.addClass("loading");    },
+        ajaxStop: function () { $body.removeClass("loading"); }
+    });
     $('input#render').bind('click', function () {
         centerMap();
     });
     $('input#no').bind('click', function () {
         clearLayer();
-
     });
     $('input#yes').bind('click', function () {
     });
