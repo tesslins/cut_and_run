@@ -5,6 +5,9 @@
     
   </div>
 {% block sidebar_div %}
+  <div id="logo">
+    <img src="/img/logo.png" alt="logo" height=200>
+  </div>
   <div id ="sidebar">
     <div id="step1"> 
     <h1 class="steps">Tell us where you are and how far you like to run.</h1>
@@ -15,17 +18,12 @@
                name="address">
         <input
           type="text"
-          placeholder="MINIMUM MILES"
-          id="min_distance"
-          name="min_distance">
-        <input
-          type="text"
-          placeholder="MAXIMUM MILES"
-          id="max_distance"
-          name="max_distance">
-        <p><input type="button" value="find routes" id="render" /></p>
+          placeholder="DISTANCE"
+          id="distance"
+          name="distance">
+        <p><input type="button" value="find routes" id="render"/></p>
       </div>
-      <div id="step2"> 
+      <div id="step2">
         <h1 class="steps">Go running for what?</h1>
         <input type="button" value="yes, dig this route" id="yes" />
         <input type="button" value="nope, next route" id="no" />

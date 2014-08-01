@@ -78,12 +78,10 @@ function submitData(lat, lng) {
     $.getJSON('/api', {
         lat: lat.toString(),
         lng: lng.toString(),
-        minDistance: $('input[name="min_distance"]').val(),
-        maxDistance: $('input[name="max_distance"]').val()
+        distance: $('input[name="distance"]').val()
     }, function (route_ids) {
         routeIds = route_ids; // routeIds is an object
         console.log('API call successful!');
-        console.log(routeIds);
         showNextRoute();
     });
     return false;
@@ -99,9 +97,8 @@ function showNextRoute() {
     renderRoute();
 }
 
-// Ajax call to get route from database and render route.
+// Call to get route from database and render route.
 function renderRoute() {
-    console.log("in renderRoute");
     //routeId = routeId;
     // Load the GeoJSON ((monster stomp)).
     map.data.loadGeoJson("/route/" + routeId);
@@ -128,29 +125,29 @@ var startLatLng;
 var endLatLng;
 var startMarker;
 var endMarker;
-var image; 
+var startMarkerimage = 'img/startmarker.png';
+var endMarkerimage;
 function addMarkers() {
+    console.log("in addMarkers");
     $.getJSON('/markers', {
-        route_id: routeId.toString()
-    }, function (start_lat, start_lng, end_lat, end_lng) {
-        startLat = parseInt(start_lat);
-        startLng = parseInt(start_lng);
-        endLat = parseInt(end_lat);
-        endLng = parseInt(end_lng);
-        startLatLng = new google.maps.LatLng(start_lat, start_lng);
-        endLatLng = new google.maps.LatLng(end_lat, end_lng);
+        route_id: routeId.toString()    
+    }, function (points) {
+        startLat = points.start_lng;
+        startLng = points.start_lat;
+        startLatLng = new google.maps.LatLng(startLat, startLng);
+        endLatLng = new google.maps.LatLng(endLat, endLng);
         startMarker = new google.maps.Marker({
             position: startLatLng,
             map: map,
             title: "start",
-            icon: image
+            icon: startMarkerimage
         });
-        endMarker = new google.maps.Marker({
-            position: endLatLng,
-            map: map,
-            title: "end",
-            visible: true
-        });
+        //endMarker = new google.maps.Marker({
+        //    position: endLatLng,
+        //    map: map,
+        //    title: "end",
+        //    visible: true
+        //});
     });
 }
 

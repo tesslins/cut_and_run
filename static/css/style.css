@@ -34,6 +34,18 @@ body {
     z-index: 1
 }
 
+#logo {
+    position: absolute;
+    height: 200px;
+    text-align: center;
+    overflow:auto;
+    float: left;
+    background: transparent;
+    margin-top: 400px;
+    margin-left: 100px;
+    z-index: 2
+}
+
 #step1 {  
 }
 
@@ -54,7 +66,7 @@ body {
 }
 
 #render:hover {
-    background: #85C285;
+    background: #009444;
 }
 
 /* this is the no button */    

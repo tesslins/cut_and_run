@@ -23,11 +23,11 @@ def homepage():
 @app.route('/api')
 def get_routes():
     '''Search for all routes near latitute-longitude, maximum and minimum
-    distance are optional. Distances currently input in miles and default to
-    minimum of 1 mile (1609 meters) and 10 miles (16093 meters) and are
-    converted to meters. Object returned from API call is directly entered
-    into database table, post-processed data is also entered in seperate table.
-    '''
+    distance are optional. Distance is input in miles with default of 5 miles.
+    Min and max distance set to .5 mile on either side, then converted to
+    meters.
+    Object returned from API call is passed to create_route function
+    for pre-processing before entry into database.'''
     print "*****get_routes function******"
     lat = request.args.get('lat') # lat comes in as type: unicode
     lng = request.args.get('lng') # lng comes in as type: unicode
@@ -35,8 +35,10 @@ def get_routes():
     lat_lng.append(lat)
     lat_lng.append(lng)
     conversion = 1609.34 # convert miles to meters
-    min_distance = (request.args.get('minDistance', 1, type=int)) * conversion
-    max_distance = (request.args.get('maxDistance', 10, type=int)) * conversion
+    distance = (request.args.get('distance', 5, type=int))
+    min_distance = (distance - .5) * conversion
+    max_distance = (distance + .5) * conversion
+    pdb.set_trace()
     routes_object = mapmyfitness.route.search(close_to_location=lat_lng,
                                         minimum_distance=min_distance,
                                         maximum_distance=max_distance)
@@ -125,7 +127,12 @@ def query_db_markers():
     end markers.'''
     route_id = request.args.get('route_id')
     r = model.session.query(model.Route).filter_by(route_id = route_id).first()
-    return json.dumps(r.start_lat, r.start_lng, r.end_lat, r.end_lng)
+    points = {}
+    points["start_lat"] = r.start_lat
+    points["start_lng"] = r.start_lng
+    points["end_lat"] = r.end_lat
+    points["end_lng"] = r.end_lng
+    return json.dumps(points)
     
         
 if __name__ == '__main__':
