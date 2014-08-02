@@ -128,41 +128,51 @@ var endLatLng;
 var startMarker;
 var endMarker;
 var startMarkerimage = 'img/startmarker.png';
-var endMarkerimage;
+var  endMarkerimage= 'img/endmarker.png';
 function addMarkers() {
     console.log("in addMarkers");
     $.getJSON('/markers', {
-        route_id: routeId.toString()    
+        route_id: routeId.toString()
     }, function (points) {
+        endLat = points.end_lng;
+        endLng = points.end_lat;
+        endLatLng = new google.maps.LatLng(endLat, endLng);
+        endMarker = new google.maps.Marker({
+            position: endLatLng,
+            map: map,
+            title: "end",
+            icon: endMarkerimage
+        });
         startLat = points.start_lng;
         startLng = points.start_lat;
         startLatLng = new google.maps.LatLng(startLat, startLng);
-        endLatLng = new google.maps.LatLng(endLat, endLng);
         startMarker = new google.maps.Marker({
             position: startLatLng,
             map: map,
             title: "start",
             icon: startMarkerimage
         });
-        //endMarker = new google.maps.Marker({
-        //    position: endLatLng,
-        //    map: map,
-        //    title: "end",
-        //    visible: true
-        //});
     });
 }
 
 // Runs on click of yes button.
+function zoomMarker() {
+    $('#step2').hide();
+    $('#logo2').hide();
+    //$('#step2').css("display", "block");
+    $('#logo3').css("display", "block");
+    map.setZoom(25);
+    map.panTo(startMarker.position);
+}
 
 $(document).ready(function () {
     initialize();
     $body = $("body");
-
-    $(document).on({
+    $(document).bind({
         ajaxStart: function () { $body.addClass("loading");    },
         ajaxStop: function () { $body.removeClass("loading"); }
     });
+
     $('input#render').bind('click', function () {
         centerMap();
     });
@@ -170,6 +180,7 @@ $(document).ready(function () {
         clearLayer();
     });
     $('input#yes').bind('click', function () {
+        zoomMarker();
     });
 });
 

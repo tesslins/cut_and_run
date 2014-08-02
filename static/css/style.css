@@ -80,6 +80,37 @@ input {
     z-index: 1
 }
 
+#logo3 {
+    display: none;
+    position: fixed;
+    bottom: 0px;
+    height: 140px;
+    text-align: center;
+    overflow:auto;
+    float: left;
+    background: transparent;
+    padding-bottom: 10px;
+    margin-left: 10px;
+    z-index: 2
+}
+
+#step2 {
+    display: none;
+    position: absolute;
+    width: 25%;
+    height: 150px;
+    text-align: left;
+    overflow:auto;
+    float: left;
+    padding-left: 20px;
+    padding-right: 10px;
+    padding-bottom: 10px;
+    background: #ffffff;
+    opacity: 0.95;
+    margin-top: 425px;
+    z-index: 1
+}
+
 /* this is the find route button */
 #render {
     width: 70px;
@@ -138,7 +169,12 @@ input {
     color: #74C0C4
 }
 
-.loading {
+/*#new-route-link-2 {*/
+/*    font-size: 20px;*/
+/*    color: #000000;*/
+/*}*/
+
+.modal {
     display:    none;
     position:   fixed;
     z-index:    10;
@@ -147,13 +183,13 @@ input {
     height:     100%;
     width:      100%;
     background: rgba( 255, 255, 255, .8 ) 
-                /*url('http://i.stack.imgur.com/FhHRx.gif') */
+                url('/img/speechbubble.png')
                 50% 50% 
                 no-repeat;
 }
 
 body.loading {
-    overflow: hidden;   
+    overflow: hidden;
 }
 
 body.loading .modal {
