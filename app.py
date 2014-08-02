@@ -12,8 +12,8 @@ import pdb #pdb.set_trace()
 
 app = Flask(__name__, static_url_path='')
 
-mapmyfitness = MapMyFitness(api_key='hhp3ye7mq97jnuz8rxfzwc3fz39ef3rp',
-                    access_token='4636bdf2cb0b82b456a855808925c42b67cab7ae')
+mapmyfitness = MapMyFitness(api_key='api_key',
+                    access_token='access_token')
                     # add cache_finds=True ?
                 
 @app.route('/')

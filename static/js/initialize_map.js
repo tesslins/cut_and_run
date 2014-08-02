@@ -1,11 +1,11 @@
 // Declare the map & geocoder & feature.
-var map;
-var geocoder;
-var i;
-var lat;
-var lng;
-var routeIds; // list from API call
-var routeId;
+var map,
+    geocoder,
+    i,
+    lat,
+    lng,
+    routeIds, // list from API call
+    routeId
 
 
 // Console log.
@@ -19,7 +19,7 @@ function trace(message) {
 function initialize() {
     var oakland = new google.maps.LatLng(37.8, -122.2);
     var mapOptions = {
-        zoom: 14,
+        zoom: 10,
         center: oakland,
         mapTypeId: google.maps.MapTypeId.TERRAIN
     };
@@ -101,6 +101,7 @@ function showNextRoute() {
 function renderRoute() {
     //routeId = routeId;
     // Load the GeoJSON ((monster stomp)).
+    map.setZoom(14);
     map.data.loadGeoJson("/route/" + routeId);
     // Set the styling.
     var featureStyle = {
@@ -119,16 +120,16 @@ function renderRoute() {
 }
 
 // Add route beginning and end markers.
-var startLat;
-var startLng;
-var endLat;
-var endLng;
-var startLatLng;
-var endLatLng;
-var startMarker;
-var endMarker;
-var startMarkerimage = 'img/startmarker.png';
-var  endMarkerimage= 'img/endmarker.png';
+var startLat,
+    startLng,
+    endLat,
+    endLng,
+    startLatLng,
+    endLatLng,
+    startMarker,
+    endMarker,
+    startMarkerimage = 'img/startmarker.png',
+    endMarkerimage= 'img/endmarker.png'
 function addMarkers() {
     console.log("in addMarkers");
     $.getJSON('/markers', {
@@ -155,7 +156,7 @@ function addMarkers() {
     });
 }
 
-// Runs on click of yes button.
+// Map zoom and center on startMarker. Runs on click of yes button.
 function zoomMarker() {
     $('#step2').hide();
     $('#logo2').hide();
