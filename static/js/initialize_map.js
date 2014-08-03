@@ -4,7 +4,7 @@ var map,
     i,
     lat,
     lng,
-    routeIds, // list from API call
+    routeIds, // route list returned from API call
     routeId
 
 
@@ -88,7 +88,7 @@ function submitData(lat, lng) {
 }
 
 // Defines route id to use for renderRoute ajax call. Increments index.
-// Runs on each click on no button.
+// Runs on each click of no button.
 var index = 0;
 function showNextRoute() {
     routeId = routeIds[index]; // routeId is a number
@@ -99,7 +99,6 @@ function showNextRoute() {
 
 // Call to get route from database and render route.
 function renderRoute() {
-    //routeId = routeId;
     // Load the GeoJSON ((monster stomp)).
     map.setZoom(14);
     map.data.loadGeoJson("/route/" + routeId);
@@ -110,8 +109,8 @@ function renderRoute() {
         strokeOpacity: 0.5
     };
     map.data.setStyle(featureStyle);
-    
     console.log("Rendering route was successful!");
+    // Hiding banner/logo and pull up next banner/logo.
     $('#step1').hide();
     $('#logo1').hide();
     $('#step2').css("display", "block");
@@ -135,15 +134,18 @@ function addMarkers() {
     $.getJSON('/markers', {
         route_id: routeId.toString()
     }, function (points) {
-        endLat = points.end_lng;
-        endLng = points.end_lat;
-        endLatLng = new google.maps.LatLng(endLat, endLng);
-        endMarker = new google.maps.Marker({
-            position: endLatLng,
-            map: map,
-            title: "end",
-            icon: endMarkerimage
-        });
+        // Place end marker first so it is behind start marker.
+        // Currently disabled.
+        //endLat = points.end_lng;
+        //endLng = points.end_lat;
+        //endLatLng = new google.maps.LatLng(endLat, endLng);
+        //endMarker = new google.maps.Marker({
+        //    position: endLatLng,
+        //    map: map,
+        //    title: "end",
+        //    icon: endMarkerimage
+        //});
+        // Place start marker.
         startLat = points.start_lng;
         startLng = points.start_lat;
         startLatLng = new google.maps.LatLng(startLat, startLng);
