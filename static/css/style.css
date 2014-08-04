@@ -1,3 +1,5 @@
+/*web stylesheet*/
+
 html {
     height: 100%
 }
@@ -28,8 +30,9 @@ input {
     overflow:auto;
     float: left;
     background: transparent;
-    margin-top: 400px;
-    margin-left: 100px;
+    bottom: 0px;
+    margin-left: 10%;
+    margin-bottom: 100px;
     z-index: 2
 }
 
@@ -39,13 +42,14 @@ input {
     text-align: center;
     overflow:auto;
     float: left;
+    bottom: 0px;
     padding-left: 10px;
     padding-right: 10px;
     padding-bottom: 10px;
     background: #ffffff;
     /*background: linear-gradient(to right, rgba(255,255,255,0), rgba(255,255,255,1));*/
     opacity: 0.95;
-    margin-top: 425px;
+    margin-bottom: 120px;
     z-index: 1;
     width: 100%
 }
@@ -58,15 +62,17 @@ input {
     overflow:auto;
     float: left;
     background: transparent;
-    margin-top: 400px;
-    margin-left: 280px;
+    bottom: 0px;
+    margin-bottom: 50px;
+    /*margin-top: 400px;*/
+    margin-left: 25%;
     z-index: 2
 }
 
 #step2 {
     display: none;
     position: absolute;
-    width: 25%;
+    width: 30%;
     height: 150px;
     text-align: left;
     overflow:auto;
@@ -76,7 +82,8 @@ input {
     padding-bottom: 10px;
     background: #ffffff;
     opacity: 0.95;
-    margin-top: 425px;
+    bottom: 0px;
+    margin-bottom: 60px;
     z-index: 1
 }
 
@@ -97,18 +104,6 @@ input {
 #step2 {
     display: none;
     position: absolute;
-    width: 25%;
-    height: 150px;
-    text-align: left;
-    overflow:auto;
-    float: left;
-    padding-left: 20px;
-    padding-right: 10px;
-    padding-bottom: 10px;
-    background: #ffffff;
-    opacity: 0.95;
-    margin-top: 425px;
-    z-index: 1
 }
 
 /* this is the find route button */
@@ -161,12 +156,15 @@ input {
 
 .steps {
     font-size: 24px;
-    padding: 0px;
+    /*margin-left: 250px;*/
+    /*padding-right: 12%;*/
 }
 
 #new-route-link {
-    font-size: 16px;
-    color: #74C0C4
+    width: 50%;
+    margin: 10px;
+    padding: 10px;
+    
 }
 
 /*#new-route-link-2 {*/
@@ -183,7 +181,7 @@ input {
     height:     100%;
     width:      100%;
     background: rgba( 255, 255, 255, .8 ) 
-                url('/img/speechbubble.png')
+                url('/img/loading.gif')
                 50% 50% 
                 no-repeat;
 }
@@ -195,6 +193,8 @@ body.loading {
 body.loading .modal {
     display: block;
 }
+
+
 
 
 

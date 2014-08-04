@@ -3,6 +3,8 @@ from flask import Flask, abort, request, render_template, jsonify, session
 from flask import url_for, flash
 from flask.views import View
 from flask.ext.sqlalchemy import SQLAlchemy
+from flask.ext.mobility import Mobility
+from flask.ext.mobility.decorators import mobile_template
 from mapmyfitness import MapMyFitness
 import requests
 import requests.auth
@@ -12,13 +14,15 @@ import model
 import pdb #call with pdb.set_trace()
 
 app = Flask(__name__, static_url_path='')
+Mobility(app)
 
 mapmyfitness = MapMyFitness(api_key='hhp3ye7mq97jnuz8rxfzwc3fz39ef3rp',
                     access_token='4636bdf2cb0b82b456a855808925c42b67cab7ae')
                 
 @app.route('/')
-def homepage():
-    return render_template("index.html")
+@mobile_template('{mobile/}index.html')
+def homepage(template): 
+    return render_template(template)
 
 @app.route('/api')
 def get_routes():
@@ -44,6 +48,7 @@ def get_routes():
         else:
             min_distance = (distance - .5) * conversion
             max_distance = (distance + .5) * conversion
+            # !! add close_to_location database query before API call !!
             routes_object = mapmyfitness.route.search(close_to_location=lat_lng,
                                                 minimum_distance=min_distance,
                                                 maximum_distance=max_distance)

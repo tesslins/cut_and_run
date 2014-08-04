@@ -27,12 +27,16 @@ a new city or for cruising new routes in your neighborhood.
 
 Some highlights of the site design are:
 
-* A single-page app powered by JavaScript to minimize page-reloading
-* A simple interface with minimal imput options (location and distance)
-* A custom loading screen display during initial API call for routes. All routes
+* Single-page app powered by JavaScript to minimize page reloads
+* Simple interface with minimal input requirement (location and distance)
+* Custom loading screen display during initial API call for routes. All routes
 returned from API call are stored in database to minimize future loading times.
-* Custom logo
+* Responsive styling
 
 ## Screenshots
 
 ## Future steps forward
+
+* Full adaptive mobile site with swipe-through capability to move through routes
+* Move to PostGreSQL database (includes PostGIS for storing spatial data)
+

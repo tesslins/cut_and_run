@@ -5,8 +5,9 @@ var map,
     lat,
     lng,
     routeIds, // route list returned from API call
-    routeId
-
+    routeId;
+console.log(lat)
+console.log(lng)
 
 // Console log.
 function trace(message) {
@@ -17,10 +18,15 @@ function trace(message) {
 
 // Create the map.
 function initialize() {
-    var oakland = new google.maps.LatLng(37.8, -122.2);
+    if (lat && lng) {
+        center = new google.maps.LatLng(lat, lng);
+    } else {
+        // Default to Oakland (of course).
+        center = new google.maps.LatLng(37.8, -122.2);
+    }
     var mapOptions = {
         zoom: 10,
-        center: oakland,
+        center: center,
         mapTypeId: google.maps.MapTypeId.TERRAIN
     };
     map = new google.maps.Map(document.getElementById('map-canvas'),
@@ -36,8 +42,8 @@ function clearLayer() {
 
 // Recreate map between routes.
 function reinitialize() {
-    var center = new google.maps.LatLng(lat, lng);
-    var mapOptions = {
+    center = new google.maps.LatLng(lat, lng);
+    mapOptions = {
         zoom: 14,
         center: center,
         mapTypeId: google.maps.MapTypeId.TERRAIN
@@ -97,6 +103,12 @@ function showNextRoute() {
     renderRoute();
 }
 
+// Confirm route is loop or out-and-back 
+function checkRoute() {
+  renderRoute();
+  addMarkers();
+}
+
 // Call to get route from database and render route.
 function renderRoute() {
     // Load the GeoJSON ((monster stomp)).
@@ -110,15 +122,14 @@ function renderRoute() {
     };
     map.data.setStyle(featureStyle);
     console.log("Rendering route was successful!");
-    // Hiding banner/logo and pull up next banner/logo.
+    // Hide existing banner/logo and pull up next banner/logo.
     $('#step1').hide();
     $('#logo1').hide();
     $('#step2').css("display", "block");
     $('#logo2').css("display", "block");
-    addMarkers();
 }
 
-// Add route beginning and end markers.
+// Add route markers - start, end, and loop.
 var startLat,
     startLng,
     endLat,
@@ -134,11 +145,14 @@ function addMarkers() {
     $.getJSON('/markers', {
         route_id: routeId.toString()
     }, function (points) {
-        // Place end marker first so it is behind start marker.
+        // Place end marker first so it is visually behind start marker.
+        startLat = points.start_lng;
+        startLng = points.start_lat;
+        startLatLng = new google.maps.LatLng(startLat, startLng);
+        endLat = points.end_lng;
+        endLng = points.end_lat;
+        endLatLng = new google.maps.LatLng(endLat, endLng);
         // Currently disabled.
-        //endLat = points.end_lng;
-        //endLng = points.end_lat;
-        //endLatLng = new google.maps.LatLng(endLat, endLng);
         //endMarker = new google.maps.Marker({
         //    position: endLatLng,
         //    map: map,
@@ -146,15 +160,17 @@ function addMarkers() {
         //    icon: endMarkerimage
         //});
         // Place start marker.
-        startLat = points.start_lng;
-        startLng = points.start_lat;
-        startLatLng = new google.maps.LatLng(startLat, startLng);
+
         startMarker = new google.maps.Marker({
             position: startLatLng,
             map: map,
             title: "start",
-            icon: startMarkerimage
+            icon: startMarkerimage,
+            animation: google.maps.Animation.DROP
         });
+        console.log(endLatLng);
+        console.log(startLatLng);
+        console.log(typeof startLatLng);
     });
 }
 
@@ -168,12 +184,24 @@ function zoomMarker() {
     map.panTo(startMarker.position);
 }
 
+// Used to round latitude and longitude values for location comparison.
+function roundNumber(rnum, rlength) { 
+    var newnumber = Math.round(rnum * Math.pow(10, rlength)) / Math.pow(10, rlength);
+    return newnumber;
+}
+
 $(document).ready(function () {
     initialize();
     $body = $("body");
-    $(document).bind({
-        ajaxStart: function () { $body.addClass("loading");    },
-        ajaxStop: function () { $body.removeClass("loading"); }
+    // Show loading screen if Ajax call is more than 3000 milliseconds (3 sec).
+    $(document).ajaxStart(function () {
+        timer = setTimeout(function () {
+            $body.addClass("loading");
+        }, 3000);
+    });
+    $(document).ajaxComplete(function () {
+        $body.removeClass("loading");
+        clearTimeout(timer);
     });
 
     $('input#render').bind('click', function () {
@@ -185,5 +213,10 @@ $(document).ready(function () {
     $('input#yes').bind('click', function () {
         zoomMarker();
     });
+    $('#new-route-link').bind('click',  function () {
+        initialize();
+    });
 });
+
+
 
