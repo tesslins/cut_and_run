@@ -12,15 +12,9 @@ with SQLAlchemy
 * Single-page app built on Python/Flask and Javascript/AJAX
 
 ## Dependencies
-Available [/here](requirements.txt).
+Available in [requirements.txt](requirements.txt).
 
 ## Development
-
-The development and design of this application came from an idea on a run (the
-general source of all best & worst life ideas) - my friend and I were talking
-about our general lack of engagement with fitness/fitness tracking apps for
-runners (think Strava, MapMyRun) due to uninspriring designs and a general
-use mindset gendered toward competitive male athletes.
 
 Each MapMyFitness API call (limit: within reasonable request volume)queries
 from an existing collection of over 60 million routes worldwide. Geographical
@@ -40,17 +34,22 @@ milage.
 
 ## Design
 
-I designed Cut & Run to be simple, straightforward, user-friendly, and inclusive.
-It is about getting out and actually running, and can be used for reference in
-a new city or for cruising new routes in your neighborhood.
+The development and design of this application came from an idea on a run (the
+general source of all best & worst life ideas). A friend and I were talking
+about our general lack of engagement with fitness/fitness tracking apps for
+runners (think Strava, MapMyRun) due to uninspriring designs and a general
+use mindset gendered toward competitive male athletes.
+
+Consequently, I designed Cut & Run to be simple, straightforward, user-friendly,
+and inclusive way to access and utilitze the huge volumes of availble fitness
+data. It is about getting out and actually running, and can be used for
+reference in a new city or for cruising new routes in your neighborhood.
 
 Inspired by the swipe-through design of many popular mobile apps, the routes
 output by a location/distance search are displayed one at a time, and the user
-is able to click through as many or as few as desired.
-
-Once a route is chosen as the preferred route, the excess interface is
-replaced by only a small logo and the map zooms to center on the starting
-point of the route.
+is able to click through as many or as few as desired. Once a route is chosen
+as the preferred route, the excess interface is replaced by only a small logo
+and the map zooms to center on the starting point of the route.
 
 Additional highlights of the site design are:
 
