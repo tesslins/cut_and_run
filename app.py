@@ -16,8 +16,8 @@ import pdb #call with pdb.set_trace()
 app = Flask(__name__, static_url_path='')
 Mobility(app)
 
-mapmyfitness = MapMyFitness(api_key='hhp3ye7mq97jnuz8rxfzwc3fz39ef3rp',
-                    access_token='4636bdf2cb0b82b456a855808925c42b67cab7ae')
+mapmyfitness = MapMyFitness(api_key='',
+                    access_token='')
                 
 @app.route('/')
 @mobile_template('{mobile/}index.html')
