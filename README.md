@@ -11,6 +11,9 @@ routes, built from the premise *like Tinder...for running routes*.
 with SQLAlchemy
 * Single-page app built on Python/Flask and Javascript/AJAX
 
+## Dependencies
+Available [/here](requirements.txt).
+
 ## Development
 
 The development and design of this application came from an idea on a run (the
