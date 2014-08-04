@@ -34,6 +34,8 @@ returned from API call are stored in database to minimize future loading times.
 * Responsive styling
 
 ## Screenshots
+![Starting screen](etc/starting_screen.png "Starting screen")
+*Starting screen*
 
 ## Future steps forward
 

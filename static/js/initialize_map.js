@@ -6,8 +6,6 @@ var map,
     lng,
     routeIds, // route list returned from API call
     routeId;
-console.log(lat)
-console.log(lng)
 
 // Console log.
 function trace(message) {
@@ -100,13 +98,38 @@ function showNextRoute() {
     routeId = routeIds[index]; // routeId is a number
     routeId = routeId.toString();
     index++;
-    renderRoute();
+    checkRoute();
 }
 
-// Confirm route is loop or out-and-back 
+// Confirm route is loop or out-and-back.
+var startLat,
+    rstartLat,
+    startLng,
+    rstartLng,
+    endLat,
+    rendLat,
+    endLng,
+    rendLng;
 function checkRoute() {
-  renderRoute();
-  addMarkers();
+    $.getJSON('/markers', {
+        route_id: routeId.toString()
+    }, function (points) {
+        // Round to third decimal place ~ 110 m.
+        startLat = points.start_lng;
+        rstartLat = roundNumber(startLat, 3);
+        startLng = points.start_lat;
+        rstartLng = roundNumber(startLng, 3);
+        endLat = points.end_lng;
+        rendLat = roundNumber(endLat, 3);
+        endLng = points.end_lat;
+        rendLng = roundNumber(endLng, 3);
+        if (rstartLat == rendLat && rstartLng == rstartLng) {
+            renderRoute();
+            addMarkers();
+        } else {
+            showNextRoute();
+        }
+    });
 }
 
 // Call to get route from database and render route.
@@ -129,48 +152,28 @@ function renderRoute() {
     $('#logo2').css("display", "block");
 }
 
-// Add route markers - start, end, and loop.
-var startLat,
-    startLng,
-    endLat,
-    endLng,
-    startLatLng,
+// Add maker to route start/finish.
+var startLatLng,
     endLatLng,
-    startMarker,
-    endMarker,
-    startMarkerimage = 'img/startmarker.png',
-    endMarkerimage= 'img/endmarker.png'
+    routeMarker,
+    routeMarkerimage = 'img/startfinishmarker.png';
 function addMarkers() {
-    console.log("in addMarkers");
-    $.getJSON('/markers', {
-        route_id: routeId.toString()
-    }, function (points) {
-        // Place end marker first so it is visually behind start marker.
-        startLat = points.start_lng;
-        startLng = points.start_lat;
-        startLatLng = new google.maps.LatLng(startLat, startLng);
-        endLat = points.end_lng;
-        endLng = points.end_lat;
-        endLatLng = new google.maps.LatLng(endLat, endLng);
-        // Currently disabled.
-        //endMarker = new google.maps.Marker({
-        //    position: endLatLng,
-        //    map: map,
-        //    title: "end",
-        //    icon: endMarkerimage
-        //});
-        // Place start marker.
-
-        startMarker = new google.maps.Marker({
-            position: startLatLng,
-            map: map,
-            title: "start",
-            icon: startMarkerimage,
-            animation: google.maps.Animation.DROP
-        });
-        console.log(endLatLng);
-        console.log(startLatLng);
-        console.log(typeof startLatLng);
+    // Place end marker (first, so it is visually behind start marker).
+    startLatLng = new google.maps.LatLng(startLat, startLng);
+    endLatLng = new google.maps.LatLng(endLat, endLng);
+    // Currently disabled.
+    //endMarker = new google.maps.Marker({
+    //    position: endLatLng,
+    //    map: map,
+    //    title: "end",
+    //    icon: endMarkerimage
+    //});
+    // Place start marker.
+    routeMarker = new google.maps.Marker({
+        position: startLatLng,
+        map: map,
+        icon: routeMarkerimage,
+        animation: google.maps.Animation.DROP
     });
 }
 
@@ -185,7 +188,7 @@ function zoomMarker() {
 }
 
 // Used to round latitude and longitude values for location comparison.
-function roundNumber(rnum, rlength) { 
+function roundNumber(rnum, rlength) {
     var newnumber = Math.round(rnum * Math.pow(10, rlength)) / Math.pow(10, rlength);
     return newnumber;
 }
