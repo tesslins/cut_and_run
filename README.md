@@ -1,7 +1,7 @@
 # Cut & Run
 
 A single-page web app to enable users to visually page through local running
-routes, built from the premise “like Tinder… for running routes”. 
+routes, built from the premise *like Tinder...for running routes*. 
 
 ## Overview
 
@@ -36,6 +36,9 @@ returned from API call are stored in database to minimize future loading times.
 ## Screenshots
 ![Starting screen](etc/starting_screen.png "Starting screen")
 *Starting screen*
+
+![Starting screen](etc/initial_route_screen.png "Starting screen")
+*Route display screen*
 
 ## Future steps forward
 
