@@ -54,7 +54,7 @@ returned from API call are stored in database to minimize future loading times.
 *Starting screen*
 
 ![Initial route screen](etc/initial_route_screen.png "Initial route screen")
-*Starting screen*
+*Initial route screen*
 
 ![Route choice screen](etc/yes_to_route_screen.png "Route choice screen")
 *Route choice screen*
