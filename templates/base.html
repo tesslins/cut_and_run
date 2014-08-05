@@ -4,7 +4,12 @@
       {% block head %}
       <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
       <meta charset="utf-8" />
+<!--      <link rel="stylesheet"
+            href="//maxcdn.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" />-->
       <link rel="stylesheet" type="text/css" href="css/style.css" />
+      <link rel='stylesheet'
+            type='text/css'
+            href='http://fonts.googleapis.com/css?family=Dosis:300,400' />
       <title>{% block title %}base{% endblock %}</title>
       <!-- Google Maps & Places API -->
       <script
@@ -15,14 +20,13 @@
       <script
         src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js">
       </script>
-      {%block head_js %}
       <script type='text/javascript' src="js/initialize_map.js"></script>
-      {% endblock %}
       {% endblock %}
     </head>
     <body>
-      {% block sidebar_div %}
+      {% block body %}
       {% endblock %}
       <div id="map-canvas"></div>
+      <div class="modal"></div>
     </body>
   </html>

@@ -1,9 +1,19 @@
 // Declare the map & geocoder & feature.
-var map;
-var geocoder;
-var i;
-var lat;
-var lng;
+var map,
+    geocoder,
+    i,
+    lat,
+    lng,
+    routeIds, // route list returned from API call/database query
+    routeId,
+    startLat,
+    rstartLat,
+    startLng,
+    rstartLng,
+    endLat,
+    rendLat,
+    endLng,
+    rendLng;
 
 // Console log.
 function trace(message) {
@@ -14,10 +24,15 @@ function trace(message) {
 
 // Create the map.
 function initialize() {
-    var oakland = new google.maps.LatLng(37.8, -122.2);
+    if (lat && lng) {
+        center = new google.maps.LatLng(lat, lng);
+    } else {
+        // Default to Oakland (of course).
+        center = new google.maps.LatLng(37.8, -122.2);
+    }
     var mapOptions = {
-        zoom: 14,
-        center: oakland,
+        zoom: 10,
+        center: center,
         mapTypeId: google.maps.MapTypeId.TERRAIN
     };
     map = new google.maps.Map(document.getElementById('map-canvas'),
@@ -33,8 +48,8 @@ function clearLayer() {
 
 // Recreate map between routes.
 function reinitialize() {
-    var center = new google.maps.LatLng(lat, lng);
-    var mapOptions = {
+    center = new google.maps.LatLng(lat, lng);
+    mapOptions = {
         zoom: 14,
         center: center,
         mapTypeId: google.maps.MapTypeId.TERRAIN
@@ -67,88 +82,144 @@ function centerMap() {
         }
     });
 }
-// To fix: Need to add a check to ensure that this is a real US zip code.
+// To fix: Need to add a check to ensure that this is a real location.
 
-// Call to Python for initial MapMyFitness API call.
+// Ajax call for initial MapMyFitness API call, returns list of route ids
 // Runs on completion of centerMap function.
 function submitData(lat, lng) {
     $.getJSON('/api', {
         lat: lat.toString(),
         lng: lng.toString(),
-        minDistance: $('input[name="min_distance"]').val(),
-        maxDistance: $('input[name="max_distance"]').val()
-    }, function (returnString) {
-        console.log(returnString)
-        console.log(typeof returnString)
-        if (returnString === "Carry on javascript!") {
-            console.log("MapMyFitness API call was successful.");
-        } else {
-            console.log("HOLD UP! MapMyFitness API call not successful.");
-        }
+        istance: $('input[name="distance"]').val()
+    }, function (route_ids) {
+        routeIds = route_ids; // routeIds is an object
+        console.log('API call successful!');
+        showNextRoute();
     });
     return false;
 }
 
-// Passes index to Python to get next route, increments index after call.
-// Runs on click of no button
-var value = 1; // Must be 1, first time is default to 0 (in Python).
+// Defines route id to use for renderRoute ajax call. Increments index.
+// Runs on each click of no button.
+var index = 0;
 function showNextRoute() {
-    $.getJSON('/create_route', {
-        index: value.toString()
-    }, function (js_file) {
-        renderRoute(js_file);
-        console.log('Index passed and value incremented.');
-    });
-    value++;
-    console.log(value);
+    routeId = routeIds[index]; // routeId is a number
+    routeId = routeId.toString();
+    index++;
+    checkRoute();
 }
 
-// Render route.
-function renderRoute(js_file) {
+// Confirm route is loop or out-and-back.
+function checkRoute() {
+    $.getJSON('/markers', {
+        route_id: routeId.toString()
+    }, function (points) {
+        // Round to third decimal place ~ 110 m.
+        startLat = points.start_lng;
+        rstartLat = roundNumber(startLat, 3);
+        startLng = points.start_lat;
+        rstartLng = roundNumber(startLng, 3);
+        endLat = points.end_lng;
+        rendLat = roundNumber(endLat, 3);
+        endLng = points.end_lat;
+        rendLng = roundNumber(endLng, 3);
+        if (rstartLat == rendLat && rstartLng == rstartLng) {
+            renderRoute();
+            addMarkers();
+        } else {
+            showNextRoute();
+        }
+    });
+}
+
+// Call to get route from database and render route.
+function renderRoute() {
     // Load the GeoJSON ((monster stomp)).
-    map.data.loadGeoJson(js_file);
+    map.setZoom(14);
+    map.data.loadGeoJson("/route/" + routeId);
     // Set the styling.
     var featureStyle = {
-            strokeColor: 'green',
-            strokeWeight: 10,
-            strokeOpacity: 0.5
-        };
+        strokeColor: 'green',
+        strokeWeight: 10,
+        strokeOpacity: 0.5
+    };
     map.data.setStyle(featureStyle);
     console.log("Rendering route was successful!");
+    // Hide existing banner/logo and pull up next banner/logo.
     $('#step1').hide();
+    $('#logo1').hide();
     $('#step2').css("display", "block");
-    addMarkers();
+    $('#logo2').css("display", "block");
 }
 
-// Add route beginning and end marker.
+// Add maker to route start/finish.
+var startLatLng,
+    endLatLng,
+    routeMarker,
+    routeMarkerimage = 'img/startfinishmarker.png';
 function addMarkers() {
-    var startLatLng = new google.maps.LatLng(lat, lng);
-    var endLatLng = new google.maps.LatLng(lat, lng);
-    var startMarker = new google.maps.Marker({
-            position: startLatLng,
-            map: map,
-            title: "start"
-        });
-    var endMarker = new google.maps.Marker({
-            position: endLatLng,
-            map: map,
-            title: "end"
-        });
+    // Place end marker (first, so it is visually behind start marker).
+    startLatLng = new google.maps.LatLng(startLat, startLng);
+    endLatLng = new google.maps.LatLng(endLat, endLng);
+    // Currently disabled.
+    //endMarker = new google.maps.Marker({
+    //    position: endLatLng,
+    //    map: map,
+    //    title: "end",
+    //    icon: endMarkerimage
+    //});
+    // Place start marker.
+    routeMarker = new google.maps.Marker({
+        position: startLatLng,
+        map: map,
+        icon: routeMarkerimage,
+        animation: google.maps.Animation.DROP
+    });
 }
 
+// Map zoom and center on startMarker. Runs on click of yes button.
+function zoomMarker() {
+    $('#step2').hide();
+    $('#logo2').hide();
+    //$('#step2').css("display", "block");
+    $('#logo3').css("display", "block");
+    map.setZoom(25);
+    map.panTo(startMarker.position);
+}
 
-// Add route distance.
+// Used to round latitude and longitude values for location comparison.
+function roundNumber(rnum, rlength) {
+    var newnumber = Math.round(rnum * Math.pow(10, rlength)) / Math.pow(10, rlength);
+    return newnumber;
+}
 
 $(document).ready(function () {
     initialize();
+    $body = $("body");
+    // Show loading screen if Ajax call is more than 3000 milliseconds (3 sec).
+    $(document).ajaxStart(function () {
+        timer = setTimeout(function () {
+            $body.addClass("loading");
+        }, 2000);
+    });
+    $(document).ajaxComplete(function () {
+        $body.removeClass("loading");
+        clearTimeout(timer);
+    });
+
     $('input#render').bind('click', function () {
         centerMap();
     });
     $('input#no').bind('click', function () {
         clearLayer();
-
     });
     $('input#yes').bind('click', function () {
+        zoomMarker();
+    });
+    $('#new-route-link').bind('click',  function () {
+        initialize();
     });
 });
+
+
 

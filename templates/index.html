@@ -1,31 +1,40 @@
+<!--web-->
 {% extends 'base.html' %}
-<title>{% block title %}mapmpamap{% endblock %}</title>
-{% block sidebar_div %}
-<div id = "sidebar" >
-  <div id="step1"> 
-  <h1 class="steps">step 1 (the search)</h1>
-      <input type="text" placeholder="enter zipcode pls" id="address" name="address">
-      <input
-        type="text"
-        placeholder="minimum distance"
-        id="min_distance"
-        name="min_distance">
-        <label for="min_distance">miles</label>
-      <input
-        type="text"
-        placeholder="maximum distance"
-        id="max_distance"
-        name="max_distance">
-        <label for="min_distance">miles</label>
-      <input type="button" value="find routes" id="render" />
-    </div>
-    <div id="step2"> 
-      <h1 class="steps">step 2 (the choice)</h1>
-      <input type="button" value="yes!" id="yes" />
-      <input type="button" value="nope" id="no" />
-      <p><a id="new-route-link"
-            href="localhost:5001">psych! do a new route search</a></p>
-            <!--call js function reinitialize? different way than href?-->
-    </div>
-</div>
+<title>{% block title %}cut & run{% endblock %}</title>
+{% block body %}
+  <div id="logo1">
+    <a href="."><img src="/img/logo.png" alt="logo" height=200></a>
+  </div>
+    <div id="step1"> 
+    <h1 class="steps">Tell us where you are and how far you like to run.</h1>
+<!--      <label for="address">Location</label>-->
+          <input
+               type="text"
+               placeholder="ZIPCODE"
+               id="address"
+               name="address">
+  <!--      <label for="distance">Distance</label>-->
+          <input
+            type="text"
+            placeholder="MILES"
+            id="distance"
+            name="distance">
+          <p><input type="button" value="find routes" id="render"/></p>
+      </div>
+      <div id="logo2">
+        <a href="."><img src="/img/logo.png" alt="logo" height=200></a>
+      </div>
+      <div id="step2">
+        <h1 class="steps">Go running for what?</h1>
+        <input type="button" value="yes, dig this route" id="yes" />
+        <input type="button" value="nope, next route" id="no" />
+        <p><a id="new-route-link"
+              href="."><img src="/img/new_search.png" height=30></a></p>
+      </div>
+      <div id="logo3">
+        <p><a href="."><img src="/img/logo.png" alt="logo" height=125></a></p>
+      </div>
+<!--      <div id="step3">
+        <a href=".">new search</a>
+      </div>-->
 {% endblock %}
