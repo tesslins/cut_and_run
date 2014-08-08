@@ -10,14 +10,17 @@ import requests
 import requests.auth
 import json
 import geojson
+import os
 import model
 import pdb #call with pdb.set_trace()
 
 app = Flask(__name__, static_url_path='')
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('OPENSHIFT_POSTGRESQL_DB_URL') if os.environ.get('OPENSHIFT_POSTGRESQL_DB_URL') else 'postgresql+psycopg2://localhost'
+
 Mobility(app)
 
-mapmyfitness = MapMyFitness(api_key='',
-                    access_token='')
+mapmyfitness = MapMyFitness(api_key='hhp3ye7mq97jnuz8rxfzwc3fz39ef3rp',
+                    access_token='4636bdf2cb0b82b456a855808925c42b67cab7ae')
                 
 @app.route('/')
 @mobile_template('{mobile/}index.html')
@@ -73,7 +76,7 @@ def create_route(routes_object, lat, lng):
     the_page = routes_object.page(single_page)
     for route in the_page:
         # adding first page (maximum 40 routes) for now.
-        # !! weird bug with moving on to second page !!
+        # !! fix bug with moving on to second page !!
         if route.id:
             route_id = route.id # <type 'int'>
             route_ids.append(route_id)
@@ -105,7 +108,6 @@ def create_route(routes_object, lat, lng):
                 start_lng = lat_lng_lists[0][-1]
                 end_lat = lat_lng_lists[-1][0]
                 end_lng = lat_lng_lists[-1][-1]
-                # !! add a check: if start == end, it is a loop !!
                 route_points_geojson = {
                                         "type": "FeatureCollection",
                                         "features": [{
@@ -118,11 +120,12 @@ def create_route(routes_object, lat, lng):
                 route_points_geojson['features'][0]['geometry'] = route_points
                 route_points_geojson = geojson.dumps(route_points_geojson,
                                                      ensure_ascii=False)
+                # ?? more elegant way to do the following if ??
                 route = model.Route(route_id, search_lat, search_lng, name,
                                    distance, ascent, descent, min_elevation,
-                                   max_elevation, city, state, route_points_geojson,
-                                   start_lat, start_lng, end_lat, end_lng)
-                # !! add a check to make sure route_id is not already in db !!
+                                   max_elevation, city, state,
+                                   route_points_geojson, start_lat,
+                                   start_lng, end_lat, end_lng)
                 model.session.add(route)
                 print "route added to session"
                 model.session.commit()
@@ -157,5 +160,6 @@ def query_db_markers():
     
         
 if __name__ == '__main__':
+    session = model.session
     app.run(debug=True, port=5001)
 

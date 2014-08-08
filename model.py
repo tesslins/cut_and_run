@@ -1,12 +1,15 @@
 import datetime
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, ForeignKey
 from sqlalchemy import Column, DateTime, Integer, Float, String, Unicode
-from sqlalchemy.orm import sessionmaker, scoped_session
-from sqlalchemy import ForeignKey
-from sqlalchemy.orm import relationship, backref
+from sqlalchemy.orm import sessionmaker, scoped_session, relationship, backref
+# from Maggie
+# from sqlalchemy.dialects.postgresql import ARRAY
+# from sqlalchemy.engine.url import URL
+# import sqlite3
 
-engine = create_engine("sqlite:///routebase.db", echo = True)
+engine = create_engine("postgresql+psycopg2://tessb@localhost:5432/routebase2",
+                       echo=True)
 
 session = scoped_session(sessionmaker(bind=engine,
                                        autocommit = False,
@@ -56,7 +59,11 @@ class Route(Base):
         self.start_lng = start_lng
         self.end_lat = end_lat
         self.end_lng = end_lng
+        
 
+def create_tables():
+    Base.metadata.create_all(engine)
+    
 def main():
     pass
 
