@@ -1,13 +1,13 @@
 # Cut & Run
 
 A single-page web app to enable users to visually page through local running
-routes, built from the premise *like Tinder...for running routes*. 
+route data in a user-friendly interface, built from the premise *like Tinder...for running routes*. 
 
 ## Overview
 
 * Basemap from Google Maps JavaScript API v3 
 * Route data from MapMyFitness API (over 60 million routes worldwide)
-* Route data from each API call stored in SQLite database; database interaction
+* Route data from each API call stored in Postgres database; database interaction
 with SQLAlchemy
 * Single-page app built on Python/Flask and Javascript/AJAX
 
@@ -18,7 +18,7 @@ Available in [requirements.txt](requirements.txt).
 
 Each MapMyFitness API call (limit: "reasonable request volume") queries by location and distance from an existing collection of over 60 million routes worldwide. Geographical location and distance for the query are set by the user on the starting screen; after which the location is encoded to latitude and longitude by the Google Geocoding API (limit: 2,500 requests per 24 hour period; 10 requests per second.) Distance range used is +/- .5 mile from the user-specified distance.
 
-All routes returned from each API call are commited to a SQLite database to
+All routes returned from each API call are commited to a Postgres database to
 allow for future route searches to query the database directly.
 
 An additional filter function automatically displays only those routes with start and end points fewer than 500 feet (110 m) apart, accounting for both loops or out-and-back routes while discounting one-way routes that would return the user to a location far from the starting point without including the return milage. 
@@ -62,6 +62,5 @@ returned from API call are stored in database to minimize future loading times.
 ## Future steps forward
 
 * Full adaptive mobile site with swipe-through capability to move through routes
-* Migrate to PostGreSQL database (includes PostGIS for storing spatial data)
 * User ability to receive routes by e-mail and share route information on social media
 
