@@ -5,6 +5,7 @@ from flask.views import View
 from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext.mobility import Mobility
 from flask.ext.mobility.decorators import mobile_template
+from geoalchemy2.elements import WKTElement
 from mapmyfitness import MapMyFitness
 import requests
 import requests.auth
@@ -56,13 +57,15 @@ def get_routes():
                                                 minimum_distance=min_distance,
                                                 maximum_distance=max_distance)
             if routes_object:
+                print routes_object
                 print "MapMyFitness API call made."
-                return create_route(routes_object, lat, lng)
+                return create_route(routes_object)
             else:
                 print "No routes returned from MapMyFitness API call."
 
-def create_route(routes_object, lat, lng):
+def create_route(routes_object):
     '''Add and commit routes as database rows.'''
+    print "in create_routes"
     route_ids = [] #used to send to javascript for database queries
     total_count = routes_object.count
     if total_count == 0:
@@ -81,8 +84,6 @@ def create_route(routes_object, lat, lng):
             route_id = route.id # <type 'int'>
             route_ids.append(route_id)
             if not model.session.query(model.Route).filter_by(route_id=route_id).count():
-                search_lat = lat
-                search_lng = lng
                 if route.name:
                     name = route.name # <type 'unicode'>
                 if route.distance:
@@ -99,37 +100,42 @@ def create_route(routes_object, lat, lng):
                     city = route.city # <type 'unicode'>
                 if route.state:
                     state = route.state # <type 'unicode'>
-                route_points = route.points(geojson=True)
-                # previous line ALMOST creates a geoJSON, requires the next 3 lines
-                lat_lng_tuples = route_points['coordinates']
-                lat_lng_lists = [list(point) for point in lat_lng_tuples]
-                route_points['coordinates'] = lat_lng_lists
-                start_lat = lat_lng_lists[0][0]
-                start_lng = lat_lng_lists[0][-1]
-                end_lat = lat_lng_lists[-1][0]
-                end_lng = lat_lng_lists[-1][-1]
-                route_points_geojson = {
-                                        "type": "FeatureCollection",
-                                        "features": [{
-                                        "type": "Feature",
-                                        "geometry": {
-                                        # route_points inserted here
+                if route.points:
+                    route_points = route.points(geojson=True)
+                    # previous line ALMOST creates a geoJSON, requires next 3 lines
+                    lat_lng_tuples = route_points['coordinates']
+                    lat_lng_lists = [list(point) for point in lat_lng_tuples]
+                    route_points['coordinates'] = lat_lng_lists
+                    start_lng = lat_lng_lists[0][-1]
+                    start_lat = lat_lng_lists[0][0]
+                    end_lng = lat_lng_lists[-1][-1]
+                    end_lat = lat_lng_lists[-1][0]
+                    start_point = WKTElement('POINT({0} {1})'.format(start_lng, start_lat),
+                                            srid=4326)
+                    end_point = WKTElement('POINT({0} {1})'.format(end_lng, end_lat),
+                                        srid=4326)
+                    route_points_geojson = {
+                                            "type": "FeatureCollection",
+                                            "features": [{
+                                            "type": "Feature",
+                                            "geometry": {
+                                            # route_points inserted here
+                                            }
+                                        }]
                                         }
-                                    }]
-                                    }
-                route_points_geojson['features'][0]['geometry'] = route_points
-                route_points_geojson = geojson.dumps(route_points_geojson,
-                                                     ensure_ascii=False)
+                    route_points_geojson['features'][0]['geometry'] = route_points
+                    route_points_geojson = geojson.dumps(route_points_geojson,
+                                                         ensure_ascii=False)
                 # ?? more elegant way to do the following if ??
-                route = model.Route(route_id, search_lat, search_lng, name,
-                                   distance, ascent, descent, min_elevation,
-                                   max_elevation, city, state,
-                                   route_points_geojson, start_lat,
-                                   start_lng, end_lat, end_lng)
+                # perhaps check that there are 16 attributes of route
+                route = model.Route(route_id, name, distance, ascent, descent,
+                                    min_elevation, max_elevation, city, state,
+                                    start_lng, start_lat, end_lng, end_lat,
+                                    start_point, end_point,
+                                    route_points_geojson)
+
                 model.session.add(route)
-                print "route added to session"
                 model.session.commit()
-                print "route committed"
     return json.dumps(route_ids)
 
 @app.route('/route/<route_id>')
@@ -150,10 +156,10 @@ def query_db_markers():
     r = model.session.query(model.Route).filter_by(route_id = route_id).first()
     if r:
         points = {}
-        points["start_lat"] = r.start_lat
-        points["start_lng"] = r.start_lng
-        points["end_lat"] = r.end_lat
-        points["end_lng"] = r.end_lng
+        points["start_lng"] = float(r.start_lng)
+        points["start_lat"] = float(r.start_lat)
+        points["end_lng"] = float(r.end_lng)
+        points["end_lat"] = float(r.end_lat)
         return json.dumps(points)
     else:
         print "No route found in database with id %d." % (route_id)

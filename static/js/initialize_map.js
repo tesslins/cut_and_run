@@ -13,7 +13,9 @@ var map,
     endLat,
     rendLat,
     endLng,
-    rendLng;
+    rendLng,
+    startLatLng,
+    routeMarker;
 
 // Console log.
 function trace(message) {
@@ -90,7 +92,7 @@ function submitData(lat, lng) {
     $.getJSON('/api', {
         lat: lat.toString(),
         lng: lng.toString(),
-        istance: $('input[name="distance"]').val()
+        distance: $('input[name="distance"]').val()
     }, function (route_ids) {
         routeIds = route_ids; // routeIds is an object
         console.log('API call successful!');
@@ -153,21 +155,11 @@ function renderRoute() {
 }
 
 // Add maker to route start/finish.
-var startLatLng,
-    endLatLng,
-    routeMarker,
-    routeMarkerimage = 'img/startfinishmarker.png';
 function addMarkers() {
-    // Place end marker (first, so it is visually behind start marker).
+    console.log("in addMarkers");
     startLatLng = new google.maps.LatLng(startLat, startLng);
-    endLatLng = new google.maps.LatLng(endLat, endLng);
-    // Currently disabled.
-    //endMarker = new google.maps.Marker({
-    //    position: endLatLng,
-    //    map: map,
-    //    title: "end",
-    //    icon: endMarkerimage
-    //});
+    console.log (startLatLng);
+    var routeMarkerimage = 'img/startfinishmarker.png';
     // Place start marker.
     routeMarker = new google.maps.Marker({
         position: startLatLng,
@@ -175,6 +167,7 @@ function addMarkers() {
         icon: routeMarkerimage,
         animation: google.maps.Animation.DROP
     });
+    console.log("out of addMarkers");
 }
 
 // Map zoom and center on startMarker. Runs on click of yes button.
