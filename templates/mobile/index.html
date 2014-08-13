@@ -1,10 +1,27 @@
 <!--mobile-->
-{% extends 'base.html' %}
+{% extends 'basemobile.html' %}
 <title>{% block title %}mobile{% endblock %}</title>
 {% block body %}
-  <div id="logo1-mobile">
-    <a href="."><img src="/img/logo.png" alt="logo" height=75></a>
-    </div>
-    <div id="step1-mobile"> 
-    </div>
+  <div class="content-padded" id="logo1-mobile">
+    <a href="."><img src="/img/logo.png" alt="logo" height=125></a>
+  </div>
+  <div id="map-my-fitness-mobile">
+    <a href="http://www.mapmyrun.com"><img src="/img/mmf_logo_RUN_powered.png" height=40></a>
+  </div>
+  <div id="step1-mobile" class="content-padded"> 
+    <h1 class="steps">Tell us where you are and how far you like to run.</h1>
+<!--      <label for="address">Location</label>-->
+          <input
+               type="text"
+               placeholder="ZIPCODE"
+               id="address"
+               name="address">
+  <!--      <label for="distance">Distance</label>-->
+          <input
+            type="text"
+            placeholder="MILES"
+            id="distance"
+            name="distance">
+          <p><input type="button" value="find routes" id="render"/></p>
+      </div>
 {% endblock %}

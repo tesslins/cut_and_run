@@ -1,4 +1,7 @@
-/*web stylesheet*/
+/*
+ * media query source:
+ * http://stuffandnonsense.co.uk/blog/about/hardboiled_css3_media_queries/
+ */
 
 html {
     height: 100%
@@ -9,6 +12,26 @@ body {
     margin: 0;
     padding: 0;
     font-family: Dosis, Arial, Helvetica, sans-serif;
+    font-size: 100%;
+}
+
+#map-canvas {
+    height: 100%;
+    padding: 0px;
+}
+
+/* Desktops and laptops ----------- */
+@media only screen 
+and (min-width : 1224px) {
+#map-my-fitness {
+    position: absolute;
+    background: transparent;
+    height: 50px;
+    bottom: 0px;
+    margin-bottom: 10px;
+    right: 0;
+    margin-right: 5px;
+    z-index: 2;
 }
 
 input {
@@ -16,11 +39,6 @@ input {
     border: 1px solid #85C285;
     width: 80px;
     margin-left: 20px;
-}
-
-#map-canvas {
-    height: 100%;
-    padding: 0px;
 }
 
 #logo1 {
@@ -34,17 +52,6 @@ input {
     margin-left: 10%;
     margin-bottom: 100px;
     z-index: 2
-}
-
-#map-my-fitness {
-    position: absolute;
-    background: transparent;
-    height: 50px;
-    bottom: 0px;
-    margin-bottom: 10px;
-    right: 0;
-    margin-right: 5px;
-    z-index: 2;
 }
 
 #step1 {
@@ -166,7 +173,7 @@ input {
 }
 
 .steps {
-    font-size: 24px;
+    font-size: 1.5em;
     /*margin-left: 250px;*/
     /*padding-right: 12%;*/
 }
@@ -204,8 +211,5 @@ body.loading {
 body.loading .modal {
     display: block;
 }
-
-
-
-
+}
 

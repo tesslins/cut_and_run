@@ -1,0 +1,39 @@
+<!-- mobile -->
+<!DOCTYPE html>
+  <html>
+    <head>
+        {% block head %}
+        <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+        <meta charset="utf-8" />
+    <!-- Next 2 lines make prototype chrome-less once bookmarked to phone's home screen -->
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <link rel="stylesheet" type="text/css" href="css/mobilestyle.css" />
+        <link rel='stylesheet'
+              type='text/css'
+              href='http://fonts.googleapis.com/css?family=Dosis:300,400' />
+    <!-- compiled Ratchet CSS -->
+        <link href="ratchet.css" rel="stylesheet">
+    <!-- Include the compiled Ratchet JS -->
+        <script src="ratchet.js"></script>
+        <title>{% block title %}base{% endblock %}</title>
+        <!-- Google Maps & Places API -->
+        <script
+          type="text/javascript"
+          src="http://maps.googleapis.com/maps/api/js?libraries=places&sensor=false">
+        </script>
+        <!-- jQuery: need to also add script for static jQuery just in case?! --> 
+        <script
+          src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js">
+        </script>
+        <script type='text/javascript' src="js/initialize_map.js"></script>
+        {% endblock %}
+    </head>
+    <body>
+      {% block body %}
+      {% endblock %}
+      <div id="map-canvas"></div>
+      <div class="modal"></div>
+    </body>
+  </html>
+  
