@@ -20,8 +20,8 @@ app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('OPENSHIFT_POSTGRESQL_DB_
 
 Mobility(app)
 
-mapmyfitness = MapMyFitness(api_key='hhp3ye7mq97jnuz8rxfzwc3fz39ef3rp',
-                    access_token='4636bdf2cb0b82b456a855808925c42b67cab7ae')
+mapmyfitness = MapMyFitness(api_key='',
+                    access_token='')
                 
 @app.route('/')
 @mobile_template('{mobile/}index.html')
@@ -143,6 +143,7 @@ def query_db(route_id):
     '''Query database by route_id to return route geoJSON to URL.'''
     route_id = int(route_id)
     r = model.session.query(model.Route).filter_by(route_id = route_id).first()
+    print r.distance
     if r:
         return r.route_points_geojson
     else:
@@ -167,5 +168,5 @@ def query_db_markers():
         
 if __name__ == '__main__':
     session = model.session
-    app.run(debug=True, port=5001)
+    app.run(debug=True, port=5000)
 

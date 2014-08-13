@@ -1,0 +1,49 @@
+html {
+    height: 100%
+}
+
+body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: Dosis, Arial, Helvetica, sans-serif;
+}
+
+#map-canvas {
+    height: 100%;
+    padding: 0px;
+}
+
+#map-my-fitness-mobile {
+    position: absolute;
+    background: transparent;
+    height: 25px;
+    bottom: 0px;
+    margin-bottom: 20px;
+    right: 0;
+    margin-right: 5px;
+    z-index: 2;
+}
+
+#logo1-mobile {
+    position: absolute;
+    background: transparent;
+    z-index: 2;
+    margin-top: 10%;
+    margin-left: 30%;
+}
+
+#step1-mobile {
+    position: absolute;
+    width: 100%;
+    height: 25%;
+    text-align: center;
+    z-index: 1;
+    opacity: 0.90;
+    background: #ffffff;
+    margin-top: 45%;
+}
+
+.steps {
+    font-size: 1.5em;
+}
