@@ -12,6 +12,7 @@ with SQLAlchemy
 * Single-page app built on Python/Flask and Javascript/AJAX
 
 ## Dependencies
+
 Available in [requirements.txt](requirements.txt).
 
 ## Development
@@ -47,17 +48,22 @@ Additional highlights of the site design are:
 * Simple interface with minimal input requirement (location and distance)
 * Custom loading screen display during initial API call for routes. All routes
 returned from API call are stored in database to minimize future loading times.
-* Responsive styling
+* Responsive styling for mobile use
 
 ## Screenshots
-![Starting screen](etc/starting_screen.png "Starting screen")
+
 *Starting screen*
+![Starting screen](etc/starting_screen.png "Starting screen")
 
-![Initial route screen](etc/initial_route_screen.png "Initial route screen")
 *Initial route screen*
+![Initial route screen](etc/initial_route_screen.png "Initial route screen")
 
-![Route choice screen](etc/yes_to_route_screen.png "Route choice screen")
 *Route choice screen*
+![Route choice screen](etc/yes_to_route_screen.png "Route choice screen")
+
+*Mobile starting screen*
+
+<img src="etc/mobile_screen.png" width="320px" />
 
 ## Future steps forward
 

@@ -1,12 +1,14 @@
 import datetime
-from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import create_engine, ForeignKey
 from sqlalchemy import Column, DateTime, Integer, Float, String, Unicode, Numeric
+from sqlalchemy.engine.url import URL
+from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, scoped_session, relationship, backref
 from geoalchemy2.types import Geometry
 
+
 engine = create_engine("postgresql+psycopg2://tessb@localhost:5432/routebase2",
-                       echo=False)
+                       echo=True)
 
 session = scoped_session(sessionmaker(bind=engine,
                                        autocommit = False,
