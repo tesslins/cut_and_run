@@ -62,7 +62,8 @@ returned from API call are stored in database to minimize future loading times.
 ![Route choice screen](etc/yes_to_route_screen.png "Route choice screen")
 
 *Mobile starting screen*
-![Mobile starting screen](etc/mobile_screen.png =320px)
+![Mobile starting screen]
+<img src="etc/mobile_screen.png" width="320px" />
 
 ## Future steps forward
 
