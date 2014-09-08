@@ -47,7 +47,7 @@ Additional highlights of the site design are:
 * Simple interface with minimal input requirement (location and distance)
 * Custom loading screen display during initial API call for routes. All routes
 returned from API call are stored in database to minimize future loading times.
-* Responsive styling
+* Responsive styling for mobile use
 
 ## Screenshots
 ![Starting screen](etc/starting_screen.png "Starting screen")
@@ -58,6 +58,9 @@ returned from API call are stored in database to minimize future loading times.
 
 ![Route choice screen](etc/yes_to_route_screen.png "Route choice screen")
 *Route choice screen*
+
+![Mobile starting screen](etc/mobile_screen.png "Mobile starting screen")
+*Mobile starting screen*
 
 ## Future steps forward
 
