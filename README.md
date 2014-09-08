@@ -12,6 +12,7 @@ with SQLAlchemy
 * Single-page app built on Python/Flask and Javascript/AJAX
 
 ## Dependencies
+
 Available in [requirements.txt](requirements.txt).
 
 ## Development
@@ -50,17 +51,18 @@ returned from API call are stored in database to minimize future loading times.
 * Responsive styling for mobile use
 
 ## Screenshots
-![Starting screen](etc/starting_screen.png "Starting screen")
+
 *Starting screen*
+![Starting screen](etc/starting_screen.png "Starting screen")
 
-![Initial route screen](etc/initial_route_screen.png "Initial route screen")
 *Initial route screen*
+![Initial route screen](etc/initial_route_screen.png "Initial route screen")
 
-![Route choice screen](etc/yes_to_route_screen.png "Route choice screen")
 *Route choice screen*
+![Route choice screen](etc/yes_to_route_screen.png "Route choice screen")
 
-![Mobile starting screen](etc/mobile_screen.png "Mobile starting screen")
 *Mobile starting screen*
+![Mobile starting screen](etc/mobile_screen.png "Mobile starting screen")
 
 ## Future steps forward
 
