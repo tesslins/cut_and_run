@@ -20,8 +20,8 @@ app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('OPENSHIFT_POSTGRESQL_DB_
 
 Mobility(app)
 
-mapmyfitness = MapMyFitness(api_key='',
-                    access_token='')
+mapmyfitness = MapMyFitness(api_key='hhp3ye7mq97jnuz8rxfzwc3fz39ef3rp',
+                    access_token='038d9fcf6684536df308f074d8b8bcba7ee574f9')
                 
 @app.route('/')
 @mobile_template('{mobile/}index.html')
