@@ -15,6 +15,29 @@ with SQLAlchemy
 
 Available in [requirements.txt](requirements.txt).
 
+## Build & Run instructions (with mac os-friendly notes)
+
+1.	Clone repo
+	```
+	git clone https://github.com/tesslins/cut_and_run.git
+	cd cut_and_run
+	```
+2.	Create virtual environment
+	```
+	virtualenv env
+	```
+3.	Activate virtual environment
+	```
+	source env/bin/activate
+	```
+4. Install dependencies
+	```
+	pip install -r requirements.txt
+	```
+5. Register at https://developer.underarmour.com/member/register to get a key and additional access token, secret, etc.
+
+6. 
+
 ## Development
 
 Each MapMyFitness API call (limit: "reasonable request volume") queries by location and distance from an existing collection of over 60 million routes worldwide. Geographical location and distance for the query are set by the user on the starting screen; after which the location is encoded to latitude and longitude by the Google Geocoding API (limit: 2,500 requests per 24 hour period; 10 requests per second.) Distance range used is +/- .5 mile from the user-specified distance.
