@@ -36,7 +36,9 @@ Available in [requirements.txt](requirements.txt).
 	```
 5. Register at https://developer.underarmour.com/member/register to get a key and additional access token, secret, etc.
 
-6. 
+6. Set key as environmental variable.
+	```
+	export MAPMYAPI_KEY=key (replace key with actual key!)
 
 ## Development
 
