@@ -40,6 +40,19 @@ Available in [requirements.txt](requirements.txt).
 	```
 	export MAPMYAPI_KEY=key (replace key with actual key!)
 	```
+7. Set secret as environmental variable.
+	```
+	export MAPMYAPI_SECRET=secret (replace secret with actual secret!)
+	```
+8. Run oauth2_test.py to generate access token.
+	```
+	python oauth2_test.py 
+	```
+9. Add access token to mapmyfitness_oauth2_clientcredentials.
+10. Ready to run app.
+	```
+	python app.py
+	```
 
 ## Development
 
