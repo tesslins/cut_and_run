@@ -3,62 +3,54 @@
 from flask import Flask, abort, request, render_template
 import requests
 import requests.auth
+import os
+import urllib
 
-CLIENT_ID = "hhp3ye7mq97jnuz8rxfzwc3fz39ef3rp"
-CLIENT_SECRET = "rcZHsyFknu4WA47AyDgJtagveHw479rUhnKX2qhj3dm"
-REDIRECT_URI = "http://localhost.mapmyapi.com:5001/callback"
+CLIENT_ID = os.environ['MAPMYAPI_KEY']
+CLIENT_SECRET = os.environ['MAPMYAPI_SECRET']
+REDIRECT_URI = u'http://localhost.mapmyapi.com:5000/callback'
+print REDIRECT_URI
+print urllib.quote(REDIRECT_URI.encode('utf-8'))
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='')
 
 @app.route('/')
 def homepage():
-    access_token = {u'access_token': u'501883a24f7f7be9fe96d9f9909776dc44a1d37c',
-                    u'token_type': u'Bearer',
-                    u'expires_in': 5182593,
-                    u'scope': u'read'} #hard code access_token in for now
+    access_token = {u'access_token': u'8cb56219e3b3c3e198efc452763822b33816f435', 
+                    u'token_type': u'Bearer', 
+                    u'expires_in': 2241332, 
+                    u'scope': 
+                    u'read'} # hard code access token
     if access_token:
-        return render_template("new_index_copy.html")
+        print "if access_token"
+        return render_template('index.html')
     else:
-        make_authorization_url()
-        return render_template("new_index_copy.html")
-
-
-@app.route('/callback')
-def callback():
-    print "IN THE CALLBACK FUNCTION"
-    code = request.args.get('code')
-    print "THIS IS THE code: " , code
-    #return "got a code! %s" % code
-    return 'got an access token! %s' % get_token(code)
-
-def make_authorization_url():
-    print "IN MAKE_ATHORIZATION_URL FUNCTION"    
-    url = 'https://www.mapmyfitness.com/v7.0/oauth2/authorize/?client_id=%s&response_type=code&redirect_uri=%s' % (CLIENT_ID, REDIRECT_URI)
-    print "THIS IS THE url: " , url
-    return url
+        print "else"
+        get_access_token()
+        return render_template('index.html')
     
-def get_token(code):
+def get_access_token():
     print "IN THE get_token FUNCTION NOW"
-    access_token_url = 'https://oauth2-api.mapmyapi.com/v7.0/oauth2/access_token/'
+    access_token_url = 'https://api.ua.com/v7.0/oauth2/uacf/access_token/'
     access_token_data = {'grant_type': 'client_credentials',
                          'client_id': CLIENT_ID,
-                         'client_secret': CLIENT_SECRET,
-                         'code': code}
+                         'client_secret': CLIENT_SECRET
+                        }
     print "THIS IS THE access_token_data: " , access_token_data
     response = requests.post(url=access_token_url,
                              data=access_token_data,
-                             headers={'Api-Key': CLIENT_ID}) #response is 200
-    print "THIS IS THE response: " , response
+                             headers={'Api-Key': CLIENT_ID})
+    print "THIS IS THE response: " , response # ensure response = 200
 
-    # Inspect the actual details of the request
-    response.request.headers['Content-Type']
-    response.request.body
+    # Inspect request details
+    print response.request.headers['Content-Type']
+    print response.request.body
     
-    # Verify you have an Access Token
+    # Verify Access Token
     access_token = response.json()
     access_token
     print "THIS IS THE access_token: " , access_token
     
 if __name__ == '__main__':
-    app.run(debug=True, port=5001)
+    app.run(debug=True, port=5000)
 
