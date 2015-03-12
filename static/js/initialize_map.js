@@ -118,6 +118,7 @@ function checkRoute() {
     $.getJSON('/markers', {
         route_id: routeId.toString()
     }, function (retVal) {
+        $("body").addClass('loading');
         routePoints = retVal['points'];
         startLat = routePoints[0]['lat'];
         rstartLat = roundNumber(startLat, 3);
@@ -137,6 +138,7 @@ function checkRoute() {
 
 // Render the route monster stomp!.
 function renderRoute() {
+    $("body").removeClass('loading');
     map.setZoom(14);
     var routeCoordinates = [];
     for (var x = 0; x < routePoints.length; x++) {
@@ -195,17 +197,20 @@ function roundNumber(rnum, rlength) {
 
 $(document).ready(function () {
     initialize();
-    $body = $("body");
-    // Show loading screen if Ajax call is more than 3000 milliseconds (3 sec).
-    $(document).ajaxStart(function () {
-        timer = setTimeout(function () {
-            $body.addClass("loading");
-        }, 2000);
-    });
-    $(document).ajaxComplete(function () {
-        $body.removeClass("loading");
-        clearTimeout(timer);
-    });
+    /// Switch from AJAX timer because current code has many short calls.
+        // $body = $("body");
+        // Show loading screen if Ajax call is more than 3000 milliseconds (3 sec).
+        // $(document).ajaxStart(function () {
+        //     timer = setTimeout(function () {
+        //         $body.addClass("loading");
+        //         console.log('loading');
+        //     }, 2000);
+        // });
+        // $(document).ajaxComplete(function () {
+        //     $body.removeClass("loading");
+        //     console.log('removing loading');
+        //     clearTimeout(timer);
+        // });
 
     $('input#render').bind('click', function () {
         centerMap();
