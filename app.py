@@ -94,21 +94,24 @@ def create_route_ids_list(routes_json):
         route_id = route['_links']['self'][0]['id'] # <type 'unicode'>
         route_ids.append(route_id)
 
-    return get_route_points(route_ids)
+    # returns route_ids as object to js
+    return json.dumps(route_ids)
 
-def get_route_points(route_ids):
-    ''' Second API call to get points for each route returned by initial close-
-        to-location API call. '''
-
-    # for route in route_ids:
-        # format can be json, gpx, or kml
-    mapmyapi_url = 'https://oauth2-api.mapmyapi.com/v7.1/route/' + '502153906' + '/?field_set=detailed&format=json'
+@app.route('/markers')
+def get_route_points():
+    ''' Second API call to get points for each route. '''
+    route = request.args.get('route_id')
+    print route
+    print type(route)
+    # format can be json, gpx, or kml
+    mapmyapi_url = 'https://oauth2-api.mapmyapi.com/v7.1/route/' + route + '/?field_set=detailed&format=json'
     response = requests.get(url=mapmyapi_url, verify=False,
                     headers={'api-key': MAPMYAPI_KEY, 'authorization': 'Bearer %s' % access_token['access_token']})
     print 'Made route id API call.'
     retVal = response.json()
     # route_json = json.dumps(retVal, sort_keys=False, indent=4, separators=(',',':'))
     route_points = retVal['points'] # <type 'list'>
+        
           
 if __name__ == '__main__':
     session = model.session
