@@ -1,16 +1,10 @@
 #!/usr/bin/env python
-from flask import Flask, abort, request, render_template, jsonify, session
-from flask import url_for, flash
-from flask.views import View
-from flask.ext.sqlalchemy import SQLAlchemy
+from flask import Flask, request, render_template, session
 from flask.ext.mobility import Mobility
 from flask.ext.mobility.decorators import mobile_template
-from geoalchemy2.elements import WKTElement
-from math import ceil
 import requests
 import requests.auth
 import json
-import geojson
 import os
 import model
 import pdb #call with pdb.set_trace()
