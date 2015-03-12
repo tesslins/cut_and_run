@@ -5,11 +5,12 @@ route data in a user-friendly interface, built from the premise *like Tinder...f
 
 ## Overview
 
-* Basemap from Google Maps JavaScript API v3 
-* Route data from MapMyFitness API (over 60 million routes worldwide)
+* Single-page app built on Python (Flask framework) and Javascript
+* Basemap and route plotting from Google Maps JavaScript API v3 @ https://developers.google.com/maps/documentation/javascript/
+* Route data from Under Armour API (formerly MapMyFitness) with over 60 million routes worldwide @ https://developer.underarmour.com/
 * Route data from each API call stored in Postgres database; database interaction
-with SQLAlchemy
-* Single-page app built on Python/Flask and Javascript/AJAX
+with SQLAlchemy [deprecated] 
+
 
 ## Dependencies
 
@@ -56,12 +57,9 @@ Available in [requirements.txt](requirements.txt).
 
 ## Development
 
-Each MapMyFitness API call (limit: "reasonable request volume") queries by location and distance from an existing collection of over 60 million routes worldwide. Geographical location and distance for the query are set by the user on the starting screen; after which the location is encoded to latitude and longitude by the Google Geocoding API (limit: 2,500 requests per 24 hour period; 10 requests per second.) Distance range used is +/- .5 mile from the user-specified distance.
+Each MapMyFitness API call (limit: "reasonable request volume") queries by location and distance from an existing collection of over 60 million routes worldwide Zipcode and route distance for the query are entered by the user on the starting screen; after which the location is encoded to latitude and longitude by the Google Geocoding API (limit: 2,500 requests per 24 hour period; 10 requests per second). Distance range used is +/- .5 mile from the user-specified distance.
 
-All routes returned from each API call are commited to a Postgres database to
-allow for future route searches to query the database directly.
-
-An additional filter function automatically displays only those routes with start and end points fewer than 500 feet (110 m) apart, accounting for both loops or out-and-back routes while discounting one-way routes that would return the user to a location far from the starting point without including the return milage. 
+Additional route calculation displays only those routes with start and end points fewer than 500 feet (110 m) apart are, accounting for both loops or out-and-back routes while discounting one-way routes that would return the user to a location far from the starting point without including the return milage. 
 
 ## Design
 
@@ -84,10 +82,10 @@ and the map zooms to center on the starting point of the route.
 Additional highlights of the site design are:
 
 * Single-page app powered by JavaScript to minimize page reloads
-* Simple interface with minimal input requirement (location and distance)
+* Simple interface with minimal input requirement from the user (location and distance)
 * Custom loading screen display during initial API call for routes. All routes
 returned from API call are stored in database to minimize future loading times.
-* Responsive styling for mobile use
+* Adaptive styling for mobile use [in progress]
 
 ## Screenshots
 
@@ -107,5 +105,5 @@ returned from API call are stored in database to minimize future loading times.
 ## Future steps forward
 
 * Full adaptive mobile site with swipe-through capability to move through routes
-* User ability to receive routes by e-mail and share route information on social media
+* Ability to receive routes by e-mail and share route information on social media
 
