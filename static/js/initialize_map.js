@@ -118,7 +118,7 @@ function checkRoute() {
     $.getJSON('/markers', {
         route_id: routeId.toString()
     }, function (retVal) {
-        $("body").addClass('loading');
+        $('body').addClass('loading');
         routePoints = retVal['points'];
         startLat = routePoints[0]['lat'];
         rstartLat = roundNumber(startLat, 3);
@@ -136,9 +136,9 @@ function checkRoute() {
     });
 }
 
-// Render the route monster stomp!.
+// Render the route monster stomp!
 function renderRoute() {
-    $("body").removeClass('loading');
+    $('body').removeClass('loading');
     map.setZoom(14);
     var routeCoordinates = [];
     for (var x = 0; x < routePoints.length; x++) {
@@ -168,8 +168,7 @@ function renderRoute() {
 // Drop maker at route start/finish after route polyline is plotted.
 function addMarkers() {
     startLatLng = new google.maps.LatLng(startLat, startLng);
-    // fancy custom image nbd
-    var routeMarkerimage = 'img/startfinishmarker.png';
+    var routeMarkerimage = 'img/startfinishmarker.png'; // fancy custom image nbd
     // Place start marker.
     routeMarker = new google.maps.Marker({
         position: startLatLng,
@@ -183,7 +182,6 @@ function addMarkers() {
 function zoomMarker() {
     $('#step2').hide();
     $('#logo2').hide();
-    //$('#step2').css("display", "block");
     $('#logo3').css("display", "block");
     map.setZoom(25);
     map.panTo(startMarker.position);
@@ -197,7 +195,7 @@ function roundNumber(rnum, rlength) {
 
 $(document).ready(function () {
     initialize();
-    /// Switch from AJAX timer because current code has many short calls.
+    /// Disable AJAX timer because current code has many short calls.
         // $body = $("body");
         // Show loading screen if Ajax call is more than 3000 milliseconds (3 sec).
         // $(document).ajaxStart(function () {
