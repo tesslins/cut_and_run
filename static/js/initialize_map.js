@@ -6,6 +6,7 @@ var map,
     lng,
     routeIds, // route list returned from API call/database query
     routeId,
+    routePoints,
     startLat,
     rstartLat,
     startLng,
@@ -117,7 +118,7 @@ function checkRoute() {
     $.getJSON('/markers', {
         route_id: routeId.toString()
     }, function (retVal) {
-        var routePoints = retVal['points'];
+        routePoints = retVal['points'];
         startLat = routePoints[0]['lat'];
         rstartLat = roundNumber(startLat, 3);
         startLng = routePoints[0]['lng'];
@@ -135,18 +136,27 @@ function checkRoute() {
     });
 }
 
-// Call to get route from database and render route.
+// Render the route monster stomp!.
 function renderRoute() {
-    // Load the GeoJSON ((monster stomp)).
     map.setZoom(14);
-    map.data.loadGeoJson("/route/" + routeId);
-    // Set the styling.
-    var featureStyle = {
-        strokeColor: 'green',
-        strokeWeight: 10,
+    var routeCoordinates = [];
+    for (var x = 0; x < routePoints.length; x++) {
+        var tempLat = routePoints[x]['lat'];
+        var tempLng = routePoints[x]['lng'];
+        tempCoordinates = new google.maps.LatLng(tempLat, tempLng);
+        routeCoordinates.push(tempCoordinates);
+    }
+
+    var routePath = new google.maps.Polyline({
+        path: routeCoordinates,
+        geodesic: true,
+        strokeColor: '#00A651',
+        strokeWeight: 8,
         strokeOpacity: 0.5
-    };
-    map.data.setStyle(featureStyle);
+    });
+
+    routePath.setMap(map);
+
     console.log("Rendering route was successful!");
     // Hide existing banner/logo and pull up next banner/logo.
     $('#step1').hide();
