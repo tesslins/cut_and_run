@@ -95,7 +95,6 @@ function submitData(lat, lng) {
         distance: $('input[name="distance"]').val()
     }, function (route_ids) {
         routeIds = route_ids; // routeIds is an object
-        console.log('API call successful!');
         showNextRoute();
     });
     return false;
@@ -106,6 +105,7 @@ function submitData(lat, lng) {
 var index = 0;
 function showNextRoute() {
     if (index <= 20) {
+        console.log(index);
         routeId = routeIds[index]; // routeId is a number
         index++;
         checkRoute();
@@ -129,7 +129,6 @@ function checkRoute() {
         rendLng = roundNumber(endLng, 3);
         if (rstartLat == rendLat && rstartLng == rstartLng) {
             renderRoute();
-            addMarkers();
         } else {
             showNextRoute();
         }
@@ -146,7 +145,6 @@ function renderRoute() {
         tempCoordinates = new google.maps.LatLng(tempLat, tempLng);
         routeCoordinates.push(tempCoordinates);
     }
-
     var routePath = new google.maps.Polyline({
         path: routeCoordinates,
         geodesic: true,
@@ -154,22 +152,21 @@ function renderRoute() {
         strokeWeight: 8,
         strokeOpacity: 0.5
     });
-
     routePath.setMap(map);
 
-    console.log("Rendering route was successful!");
     // Hide existing banner/logo and pull up next banner/logo.
     $('#step1').hide();
     $('#logo1').hide();
     $('#step2').css("display", "block");
     $('#logo2').css("display", "block");
+
+    addMarkers();
 }
 
-// Add maker to route start/finish.
+// Drop maker at route start/finish after route polyline is plotted.
 function addMarkers() {
-    console.log("in addMarkers");
     startLatLng = new google.maps.LatLng(startLat, startLng);
-    console.log (startLatLng);
+    // fancy custom image nbd
     var routeMarkerimage = 'img/startfinishmarker.png';
     // Place start marker.
     routeMarker = new google.maps.Marker({
@@ -178,7 +175,6 @@ function addMarkers() {
         icon: routeMarkerimage,
         animation: google.maps.Animation.DROP
     });
-    console.log("out of addMarkers");
 }
 
 // Map zoom and center on startMarker. Runs on click of yes button.
@@ -191,7 +187,7 @@ function zoomMarker() {
     map.panTo(startMarker.position);
 }
 
-// Used to round latitude and longitude values for location comparison.
+// Helper to round latitude and longitude values for location comparison.
 function roundNumber(rnum, rlength) {
     var newnumber = Math.round(rnum * Math.pow(10, rlength)) / Math.pow(10, rlength);
     return newnumber;
