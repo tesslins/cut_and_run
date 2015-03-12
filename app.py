@@ -6,6 +6,7 @@ from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext.mobility import Mobility
 from flask.ext.mobility.decorators import mobile_template
 from geoalchemy2.elements import WKTElement
+from math import ceil
 import requests
 import requests.auth
 import json
@@ -109,10 +110,8 @@ def get_route_points():
                     headers={'api-key': MAPMYAPI_KEY, 'authorization': 'Bearer %s' % access_token['access_token']})
     print 'Made route id API call.'
     retVal = response.json()
-    # route_json = json.dumps(retVal, sort_keys=False, indent=4, separators=(',',':'))
-    route_points = retVal['points'] # <type 'list'>
-        
-          
+    return json.dumps(retVal)
+
 if __name__ == '__main__':
     session = model.session
     app.run(debug=True, port=5000)

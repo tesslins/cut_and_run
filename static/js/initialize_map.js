@@ -104,24 +104,27 @@ function submitData(lat, lng) {
 // Runs on each click of no button.
 var index = 0;
 function showNextRoute() {
-    routeId = routeIds[index]; // routeId is a number
-    index++;
-    checkRoute();
+    if (index <= 20) {
+        routeId = routeIds[index]; // routeId is a number
+        index++;
+        checkRoute();
+    }
 }
 
-// Confirm route is loop or out-and-back.
+// Ensure route is a loop or out and back - check that starting lat/lng and 
+// ending lat/lng are near each other (within ~110 m).
 function checkRoute() {
     $.getJSON('/markers', {
         route_id: routeId.toString()
-    }, function (points) {
-        // Round to third decimal place ~ 110 m.
-        startLat = points.start_lng;
+    }, function (retVal) {
+        var routePoints = retVal['points'];
+        startLat = routePoints[0]['lat'];
         rstartLat = roundNumber(startLat, 3);
-        startLng = points.start_lat;
+        startLng = routePoints[0]['lng'];
         rstartLng = roundNumber(startLng, 3);
-        endLat = points.end_lng;
+        endLat = routePoints[routePoints.length -1]['lat'];
         rendLat = roundNumber(endLat, 3);
-        endLng = points.end_lat;
+        endLng = routePoints[routePoints.length -1]['lng'];
         rendLng = roundNumber(endLng, 3);
         if (rstartLat == rendLat && rstartLng == rstartLng) {
             renderRoute();
