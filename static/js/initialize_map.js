@@ -1,22 +1,21 @@
-// Declare the map & geocoder & feature.
-var map,
-    geocoder,
-    i,
-    lat,
-    lng,
+// Declare variables
+var map, // map object for Google Map
+    geocoder, // geocoded user-entered zipcode for Google Map
+    lat, // latitude from user-entered zipcode
+    lng, // longitude from user-entered zipcode
     routeIds, // route list returned from API call/database query
-    routeId,
-    routePoints,
-    startLat,
-    rstartLat,
-    startLng,
-    rstartLng,
-    endLat,
-    rendLat,
-    endLng,
-    rendLng,
-    startLatLng,
-    routeMarker;
+    routeId, // single route ID from routeIds array
+    routePoints, // array of all points from single route
+    startLat, // latitude of route start point
+    rstartLat, // rounded latitude of route start point
+    startLng, // longitude of route start point
+    rstartLng, // rounded longitude of route start point
+    endLat, // latitude of end route point
+    rendLat, // rounded latitude of end route point
+    endLng, // longitude of end route point
+    rendLng, // rounded longitude of end route point
+    startLatLng, // single point to drop the start & finish marker
+    routeMarker; // custom route marker for Google Map
 
 // Console log.
 function trace(message) {
