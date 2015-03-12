@@ -45,7 +45,6 @@ function initialize() {
 function clearLayer() {
     map.data.setMap(null);
     reinitialize();
-    console.log("data layer cleared");
 }
 
 // Recreate map between routes.
@@ -84,9 +83,9 @@ function centerMap() {
         }
     });
 }
-// To fix: Need to add a check to ensure that this is a real location.
+// To do: Need to add a check to ensure that this is a real location.
 
-// Ajax call for initial MapMyFitness API call, returns list of route ids
+// Ajax call for close-to-location MapMyFitness API call, returns list of route ids
 // Runs on completion of centerMap function.
 function submitData(lat, lng) {
     $.getJSON('/api', {
@@ -106,7 +105,6 @@ function submitData(lat, lng) {
 var index = 0;
 function showNextRoute() {
     routeId = routeIds[index]; // routeId is a number
-    routeId = routeId.toString();
     index++;
     checkRoute();
 }
