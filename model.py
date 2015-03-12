@@ -1,3 +1,5 @@
+# currently unused database schema
+
 import datetime
 from sqlalchemy import create_engine, ForeignKey
 from sqlalchemy import Column, DateTime, Integer, Float, String, Unicode, Numeric
