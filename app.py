@@ -19,11 +19,7 @@ Mobility(app)
 # API key
 MAPMYAPI_KEY = os.environ['MAPMYAPI_KEY']
 MAPMYAPI_SECRET = os.environ['MAPMYAPI_SECRET']
-
-access_token = {u'access_token': u'8cb56219e3b3c3e198efc452763822b33816f435', 
-                u'token_type': u'Bearer', 
-                u'expires_in': 2148789, 
-                u'scope': u'read'}
+access_token = os.environ['ACCESS_TOKEN']
 
 # Routes
 @app.route('/')
@@ -69,7 +65,7 @@ def get_routes():
             return create_route_ids_list(routes_json)
 
 def create_route_ids_list(routes_json):
-    '''Add and commit routes as database rows.'''
+    '''Create list of route IDs from close-to-location API call.'''
     print "in create_routes"
     route_ids = [] #used to send to javascript for database queries
     route_dict = json.loads(routes_json)
