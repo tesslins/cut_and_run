@@ -1,3 +1,5 @@
+# basic config file, to be developed further
+
 import os
 
 class Config(object):

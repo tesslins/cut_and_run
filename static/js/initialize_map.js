@@ -1,21 +1,21 @@
-// Declare the map & geocoder & feature.
-var map,
-    geocoder,
-    i,
-    lat,
-    lng,
+// Declare variables
+var map, // map object for Google Map
+    geocoder, // geocoded user-entered zipcode for Google Map
+    lat, // latitude from user-entered zipcode
+    lng, // longitude from user-entered zipcode
     routeIds, // route list returned from API call/database query
-    routeId,
-    startLat,
-    rstartLat,
-    startLng,
-    rstartLng,
-    endLat,
-    rendLat,
-    endLng,
-    rendLng,
-    startLatLng,
-    routeMarker;
+    routeId, // single route ID from routeIds array
+    routePoints, // array of all points from single route
+    startLat, // latitude of route start point
+    rstartLat, // rounded latitude of route start point
+    startLng, // longitude of route start point
+    rstartLng, // rounded longitude of route start point
+    endLat, // latitude of end route point
+    rendLat, // rounded latitude of end route point
+    endLng, // longitude of end route point
+    rendLng, // rounded longitude of end route point
+    startLatLng, // single point to drop the start & finish marker
+    routeMarker; // custom route marker for Google Map
 
 // Console log.
 function trace(message) {
@@ -45,7 +45,6 @@ function initialize() {
 function clearLayer() {
     map.data.setMap(null);
     reinitialize();
-    console.log("data layer cleared");
 }
 
 // Recreate map between routes.
@@ -84,9 +83,9 @@ function centerMap() {
         }
     });
 }
-// To fix: Need to add a check to ensure that this is a real location.
+// To do: Need to add a check to ensure that this is a real location.
 
-// Ajax call for initial MapMyFitness API call, returns list of route ids
+// Ajax call for close-to-location MapMyFitness API call, returns list of route ids
 // Runs on completion of centerMap function.
 function submitData(lat, lng) {
     $.getJSON('/api', {
@@ -95,7 +94,6 @@ function submitData(lat, lng) {
         distance: $('input[name="distance"]').val()
     }, function (route_ids) {
         routeIds = route_ids; // routeIds is an object
-        console.log('API call successful!');
         showNextRoute();
     });
     return false;
@@ -105,61 +103,71 @@ function submitData(lat, lng) {
 // Runs on each click of no button.
 var index = 0;
 function showNextRoute() {
-    routeId = routeIds[index]; // routeId is a number
-    routeId = routeId.toString();
-    index++;
-    checkRoute();
+    if (index <= 20) {
+        console.log(index);
+        routeId = routeIds[index]; // routeId is a number
+        index++;
+        checkRoute();
+    }
 }
 
-// Confirm route is loop or out-and-back.
+// Ensure route is a loop or out and back - check that starting lat/lng and 
+// ending lat/lng are near each other (within ~110 m).
 function checkRoute() {
     $.getJSON('/markers', {
         route_id: routeId.toString()
-    }, function (points) {
-        // Round to third decimal place ~ 110 m.
-        startLat = points.start_lng;
+    }, function (retVal) {
+        $('body').addClass('loading');
+        routePoints = retVal['points'];
+        startLat = routePoints[0]['lat'];
         rstartLat = roundNumber(startLat, 3);
-        startLng = points.start_lat;
+        startLng = routePoints[0]['lng'];
         rstartLng = roundNumber(startLng, 3);
-        endLat = points.end_lng;
+        endLat = routePoints[routePoints.length -1]['lat'];
         rendLat = roundNumber(endLat, 3);
-        endLng = points.end_lat;
+        endLng = routePoints[routePoints.length -1]['lng'];
         rendLng = roundNumber(endLng, 3);
         if (rstartLat == rendLat && rstartLng == rstartLng) {
             renderRoute();
-            addMarkers();
         } else {
             showNextRoute();
         }
     });
 }
 
-// Call to get route from database and render route.
+// Render the route monster stomp!
 function renderRoute() {
-    // Load the GeoJSON ((monster stomp)).
+    $('body').removeClass('loading');
     map.setZoom(14);
-    map.data.loadGeoJson("/route/" + routeId);
-    // Set the styling.
-    var featureStyle = {
-        strokeColor: 'green',
-        strokeWeight: 10,
+    var routeCoordinates = [];
+    for (var x = 0; x < routePoints.length; x++) {
+        var tempLat = routePoints[x]['lat'];
+        var tempLng = routePoints[x]['lng'];
+        tempCoordinates = new google.maps.LatLng(tempLat, tempLng);
+        routeCoordinates.push(tempCoordinates);
+    }
+    var routePath = new google.maps.Polyline({
+        path: routeCoordinates,
+        geodesic: true,
+        strokeColor: '#00A651',
+        strokeWeight: 8,
         strokeOpacity: 0.5
-    };
-    map.data.setStyle(featureStyle);
-    console.log("Rendering route was successful!");
+    });
+    routePath.setMap(map);
+
     // Hide existing banner/logo and pull up next banner/logo.
     $('#step1').hide();
     $('#logo1').hide();
     $('#step2').css("display", "block");
     $('#logo2').css("display", "block");
+
+    addMarkers();
 }
 
-// Add maker to route start/finish.
+// Drop maker at route start/finish after route polyline is plotted.
 function addMarkers() {
-    console.log("in addMarkers");
     startLatLng = new google.maps.LatLng(startLat, startLng);
-    console.log (startLatLng);
-    var routeMarkerimage = 'img/startfinishmarker.png';
+    var routeMarkerimage = 'img/startfinishmarker.png'; // fancy custom image nbd
     // Place start marker.
     routeMarker = new google.maps.Marker({
         position: startLatLng,
@@ -167,20 +175,18 @@ function addMarkers() {
         icon: routeMarkerimage,
         animation: google.maps.Animation.DROP
     });
-    console.log("out of addMarkers");
 }
 
 // Map zoom and center on startMarker. Runs on click of yes button.
 function zoomMarker() {
     $('#step2').hide();
     $('#logo2').hide();
-    //$('#step2').css("display", "block");
     $('#logo3').css("display", "block");
     map.setZoom(25);
     map.panTo(startMarker.position);
 }
 
-// Used to round latitude and longitude values for location comparison.
+// Helper to round latitude and longitude values for location comparison.
 function roundNumber(rnum, rlength) {
     var newnumber = Math.round(rnum * Math.pow(10, rlength)) / Math.pow(10, rlength);
     return newnumber;
@@ -188,17 +194,20 @@ function roundNumber(rnum, rlength) {
 
 $(document).ready(function () {
     initialize();
-    $body = $("body");
-    // Show loading screen if Ajax call is more than 3000 milliseconds (3 sec).
-    $(document).ajaxStart(function () {
-        timer = setTimeout(function () {
-            $body.addClass("loading");
-        }, 2000);
-    });
-    $(document).ajaxComplete(function () {
-        $body.removeClass("loading");
-        clearTimeout(timer);
-    });
+    /// Disable AJAX timer because current code has many short calls.
+        // $body = $("body");
+        // Show loading screen if Ajax call is more than 3000 milliseconds (3 sec).
+        // $(document).ajaxStart(function () {
+        //     timer = setTimeout(function () {
+        //         $body.addClass("loading");
+        //         console.log('loading');
+        //     }, 2000);
+        // });
+        // $(document).ajaxComplete(function () {
+        //     $body.removeClass("loading");
+        //     console.log('removing loading');
+        //     clearTimeout(timer);
+        // });
 
     $('input#render').bind('click', function () {
         centerMap();
