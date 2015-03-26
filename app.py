@@ -17,8 +17,8 @@ app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('OPENSHIFT_POSTGRESQL_DB_
 Mobility(app)
 
 # API key
-MAPMYAPI_KEY = os.environ['MAPMYAPI_KEY']
-MAPMYAPI_SECRET = os.environ['MAPMYAPI_SECRET']
+MAPMYAPI_KEY = '62xb5fhesk3gb3fj3yttw2mh4yn54krt'
+MAPMYAPI_SECRET = 'JJYKeRZXEFvvQ8uTzCrZCQjkwqv6TuphxFHmjcsBwu4'
 
 access_token = {u'access_token': u'8cb56219e3b3c3e198efc452763822b33816f435', 
                 u'token_type': u'Bearer', 
