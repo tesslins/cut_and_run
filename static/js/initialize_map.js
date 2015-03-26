@@ -177,13 +177,13 @@ function addMarkers() {
     });
 }
 
-// Map zoom and center on startMarker. Runs on click of yes button.
+// Map zoom and center on routeMarker. Runs on click of yes button.
 function zoomMarker() {
     $('#step2').hide();
     $('#logo2').hide();
     $('#logo3').css("display", "block");
     map.setZoom(25);
-    map.panTo(startMarker.position);
+    map.panTo(routeMarker.position);
 }
 
 // Helper to round latitude and longitude values for location comparison.
