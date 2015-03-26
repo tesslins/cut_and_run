@@ -1,0 +1,1 @@
+web: gunicorn cut_and_run.wsgi --log-file -
