@@ -15,11 +15,18 @@
         type="text/javascript"
         src="http://maps.googleapis.com/maps/api/js?libraries=places&sensor=false">
       </script>
-      <!-- jQuery: need to also add script for web-less jQuery just in case?! --> 
+      <!-- Mapbox - Mapbox.js, CSS, accessToken -->
+        <link href='https://api.tiles.mapbox.com/mapbox.js/v2.1.5/mapbox.css' rel='stylesheet' />
+        <script src='https://api.tiles.mapbox.com/mapbox.js/v2.1.5/mapbox.js'></script>
+        <script>
+          L.mapbox.accessToken = 'pk.eyJ1IjoidGVzc2xpbnMiLCJhIjoiSGNpcE5uVSJ9.kHgz12zmSHH04rnVwRf2YQ';
+        </script>
+      <!-- jQuery--> 
       <script
         src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js">
       </script>
       <script type='text/javascript' src="js/initialize_map.js"></script>
+      <script type='text/javascript' src="js/mapbox.js"></script>
       {% endblock %}
     </head>
     <body>
