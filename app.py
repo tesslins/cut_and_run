@@ -6,7 +6,6 @@ import requests
 import requests.auth
 import json
 import os
-import model
 import pdb #call with pdb.set_trace()
 
 # App info
