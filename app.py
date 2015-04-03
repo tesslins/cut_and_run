@@ -16,10 +16,13 @@ app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('OPENSHIFT_POSTGRESQL_DB_
 
 Mobility(app)
 
-# API key
+# Environmental vaiables
 MAPMYAPI_KEY = os.environ['MAPMYAPI_KEY']
 MAPMYAPI_SECRET = os.environ['MAPMYAPI_SECRET']
-access_token = os.environ['ACCESS_TOKEN']
+access_token = {u'access_token': u'8cb56219e3b3c3e198efc452763822b33816f435', 
+                u'token_type': u'Bearer', 
+                u'expires_in': 2148789, 
+                u'scope': u'read'}
 
 # Routes
 @app.route('/')
@@ -92,8 +95,6 @@ def create_route_ids_list(routes_json):
 def get_route_points():
     ''' Second API call to get points for each route. '''
     route = request.args.get('route_id')
-    print route
-    print type(route)
     # format can be json, gpx, or kml
     mapmyapi_url = 'https://oauth2-api.mapmyapi.com/v7.1/route/' + route + '/?field_set=detailed&format=json'
     response = requests.get(url=mapmyapi_url, verify=False,
