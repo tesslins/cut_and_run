@@ -17,7 +17,7 @@ var map, // map object for Google Map
     startLatLng, // single point to drop the start & finish marker
     routeMarker; // custom route marker for Google Map
 
-// Console log.
+// Console log
 function trace(message) {
     if (typeof console !== 'undefined') {
         console.log(message);
@@ -25,69 +25,50 @@ function trace(message) {
 }
 
 // Create the map.
+// ?? Why is map initializing twice with Mapbox?
 function initialize() {
-    // if (lat && lng) {
-    //     center = new google.maps.LatLng(lat, lng);
-    // } else {
-    //     // Default to Oakland (of course).
-    //     center = new google.maps.LatLng(37.8, -122.2);
-    // }
-    // var mapOptions = {
-    //     zoom: 10,
-    //     center: center,
-    //     mapTypeId: google.maps.MapTypeId.TERRAIN
-    // };
-    // map = new google.maps.Map(document.getElementById('map-canvas'),
-    //                           mapOptions);
+    if (!lat && !lng) {
+        // Default to Oakland of course.
+        lat = 37.8;
+        lng = -122.2;
+    }
 
     // L.mapbox.map(element, id|url|tilejson, options(optional))
-    var map = L.mapbox.map('map-canvas', 'examples.map-i86l3621')
-        .setView([37.8, -122.2], 10);
+    map = L.mapbox.map('map-canvas', 'examples.map-i86l3621')
+        .setView([lat, lng], 10);
 }
 
 // Set map to null to clear data layer containing previous route.
 function clearLayer() {
-    map.data.setMap(null);
+    map.remove();
     reinitialize();
 }
 
 // Recreate map between routes.
+// ?? Must be a better way to do this, try to add & remove layers?
 function reinitialize() {
-    center = new google.maps.LatLng(lat, lng);
-    mapOptions = {
-        zoom: 14,
-        center: center,
-        mapTypeId: google.maps.MapTypeId.TERRAIN
-    };
-    map = new google.maps.Map(document.getElementById('map-canvas'),
-                              mapOptions);
+    map = L.mapbox.map('map-canvas', 'examples.map-i86l3621')
+        .setView([lat, lng], 10);
     showNextRoute();
 }
 
 // Centers map on zip code. Runs on click of "Find A Route" button.
-geocoder = new google.maps.Geocoder();
+// Mapbox Forward geocoding - place name (ie zipcode) to lat/lng
 function centerMap() {
+    // address is zipcode
     var address = $('#address').val();
-    geocoder.geocode({ 'address': address}, function (results, status) {
-        if (status === google.maps.GeocoderStatus.OK) {
-            if (results[0]) {
-                var googleLatLng = results[0].geometry.location;
-                lat = results[0].geometry.location.lat();
-                lng = results[0].geometry.location.lng();
-                map.setCenter(googleLatLng);
-                submitData(lat, lng);
-            } else {
-                console.log("centerMap function not working!");
-            }
-        } else {
-            console.log(
-                "centerMap function was not successful because: "
-                    + status
-            );
-        }
-    });
+    // url example http://api.tiles.mapbox.com/v4/geocode/{index}/{query}.json?access_token=<your access token>
+    var geocodeUrl = 'http://api.tiles.mapbox.com/v4/geocode/mapbox.places/' + address + '.json?access_token=' + L.mapbox.accessToken;
+     $.getJSON(geocodeUrl, function( data ) {
+        // definitely returns backwards, why??!
+        lat = data.features[0].center[1];
+        lng = data.features[0].center[0];
+        var centerLatLng = [lat, lng];
+        map.setView(centerLatLng, 13);
+        submitData(lat, lng);
+     });
 }
-// To do: Need to add a check to ensure that this is a real location.
+// To do: Add an error check to ensure that zipcode is actually real.
 
 // Ajax call for close-to-location MapMyFitness API call, returns list of route ids
 // Runs on completion of centerMap function.
