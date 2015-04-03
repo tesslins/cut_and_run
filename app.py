@@ -9,10 +9,7 @@ import os
 import pdb #call with pdb.set_trace()
 
 # App info
-
 app = Flask(__name__, static_url_path='')
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('OPENSHIFT_POSTGRESQL_DB_URL') if os.environ.get('OPENSHIFT_POSTGRESQL_DB_URL') else 'postgresql+psycopg2://localhost'
-
 Mobility(app)
 
 # API key
@@ -106,6 +103,5 @@ def get_route_points():
     return json.dumps(retVal)
 
 if __name__ == '__main__':
-    session = model.session
     app.run(debug=True, port=5000)
 
