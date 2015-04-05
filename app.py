@@ -16,7 +16,7 @@ Mobility(app)
 MAPMYAPI_KEY = '62xb5fhesk3gb3fj3yttw2mh4yn54krt'
 MAPMYAPI_SECRET = 'JJYKeRZXEFvvQ8uTzCrZCQjkwqv6TuphxFHmjcsBwu4'
 
-access_token = {u'access_token': u'8cb56219e3b3c3e198efc452763822b33816f435', 
+access_token = {u'access_token': u'a26d95f8560d358f3c2dd39dff7a2d27eb29f50e', 
                 u'token_type': u'Bearer', 
                 u'expires_in': 2148789, 
                 u'scope': u'read'}
@@ -61,7 +61,6 @@ def get_routes():
             print 'Made close-to-location API Call.'
             retVal = response.json()
             routes_json = json.dumps(retVal, sort_keys=False, indent=4, separators=(',',':'))
-            # print routes_json
             return create_route_ids_list(routes_json)
 
 def create_route_ids_list(routes_json):
@@ -98,7 +97,7 @@ def get_route_points():
     mapmyapi_url = 'https://oauth2-api.mapmyapi.com/v7.1/route/' + route + '/?field_set=detailed&format=json'
     response = requests.get(url=mapmyapi_url, verify=False,
                     headers={'api-key': MAPMYAPI_KEY, 'authorization': 'Bearer %s' % access_token['access_token']})
-    print 'Made route id API call.'
+    print 'Made single route id API call.'
     retVal = response.json()
     return json.dumps(retVal)
 
