@@ -57,18 +57,22 @@ function reinitialize() {
 function centerMap() {
     // address is zipcode
     var address = $('#address').val();
-    // url example http://api.tiles.mapbox.com/v4/geocode/{index}/{query}.json?access_token=<your access token>
-    var geocodeUrl = 'http://api.tiles.mapbox.com/v4/geocode/mapbox.places/' + address + '.json?access_token=' + L.mapbox.accessToken;
-     $.getJSON(geocodeUrl, function( data ) {
-        // definitely returns backwards, why??!
-        lat = data.features[0].center[1];
-        lng = data.features[0].center[0];
-        var centerLatLng = [lat, lng];
-        map.setView(centerLatLng, 13);
-        submitData(lat, lng);
-     });
+    geocoder = L.mapbox.geocoder('mapbox.places');
+    geocoder.query(address, showCenterMap);
 }
 // To do: Add an error check to ensure that zipcode is actually real.
+
+function showCenterMap(err, data) {
+    // The geocoder can return an area, like a city, or a
+    // point, like an address. Here we handle both cases,
+    // by fitting the map bounds to an area or zooming to a point.
+    if (data.lbounds) {
+        map.fitBounds(data.lbounds);
+    } else if (data.latlng) {
+        map.setView([data.latlng[0], data.latlng[1]], 13);
+    }
+    submitData(lat, lng);
+}
 
 // Ajax call for close-to-location MapMyFitness API call, returns list of route ids
 // Runs on completion of centerMap function.
