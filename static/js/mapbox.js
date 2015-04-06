@@ -127,27 +127,18 @@ function checkRoute() {
 function renderRoute(routeData) {
     $('body').removeClass('loading');
     // map.setZoom(14); // need to replace this to mapbox-friendly zoom
-    var routeCoordinates = []; // for geojson
     var polylinePoints = []; // for polyline
     for (var i = 0; i < routePoints.length; i++) {
         var tempLat = routePoints[i]['lat'];
         var tempLng = routePoints[i]['lng'];
-        // add as object to create geojson
-        tempCoordinates = {'lat': tempLat, 'lng': tempLng};
-        routeCoordinates.push(tempCoordinates);
         // add as list to create polyline
         polylinePoints.push([tempLat, tempLng]);
     }
-    // Create geojson 
-    var geojsonMagic = GeoJSON.parse(routeCoordinates, {Point: ['lat', 'lng']});
-    var featureLayer = L.mapbox.featureLayer()
-                        .setGeoJSON(geojsonMagic)
-                        .addTo(map);
     // Set polyline options & create  polyline
     var polylineOptions = {
         color: '#00A651'
     };
-    // var polyline = L.polyline(polylinePoints, polylineOptions).addTo(map);
+    var polyline = L.polyline(polylinePoints, polylineOptions).addTo(map);
 
     // Hide existing banner/logo and pull up next banner/logo.
     $('#step1').hide();
