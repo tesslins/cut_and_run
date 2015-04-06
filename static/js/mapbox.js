@@ -151,15 +151,30 @@ function renderRoute(routeData) {
 
 // Drop maker at route start/finish after route polyline is plotted.
 function addMarkers() {
-    startLatLng = new google.maps.LatLng(startLat, startLng);
-    var routeMarkerimage = 'img/startfinishmarker.png'; // fancy custom image nbd
-    // Place start marker.
-    routeMarker = new google.maps.Marker({
-        position: startLatLng,
-        map: map,
-        icon: routeMarkerimage,
-        animation: google.maps.Animation.DROP
-    });
+    // startLatLng = [];
+    // startLatLng.push({'lat' : routePoints[0]['lat'], 
+    //                     'lng': routePoints[0]['lng']});
+    // var routeMarker: GeoJSON.parse(startLatLng, {Point: ['lat', 'lng']});
+    L.mapbox.featureLayer({
+    type: 'Feature',
+    geometry: {
+        type: 'Point',
+        // coordinates here are in longitude, latitude order because
+        // x, y is the standard for GeoJSON and many formats
+        coordinates: [
+          routePoints[0]['lng'],
+          routePoints[0]['lat']
+        ]
+    },
+    properties: {
+        title: 'start & end',
+        // one can customize markers by adding simplestyle properties
+        // https://www.mapbox.com/guides/an-open-platform/#simplestyle
+        'marker-size': 'large',
+        'marker-color': '#00A651',
+        'marker-symbol': 'pitch'
+    }
+}).addTo(map);
 }
 
 // Map zoom and center on routeMarker. Runs on click of yes button.
