@@ -1,9 +1,9 @@
 // Declare variables
-var map, // map object for Google Map
-    geocoder, // geocoded user-entered zipcode for Google Map
+var map, // map object
+    geocoder, // geocoded user-entered zipcode
     lat, // latitude from user-entered zipcode
     lng, // longitude from user-entered zipcode
-    routeIds, // route list returned from API call/database query
+    routeIds, // route list returned from API call
     routeId, // single route ID from routeIds array
     routePoints, // array of all points from single route
     startLat, // latitude of route start point
@@ -15,7 +15,7 @@ var map, // map object for Google Map
     endLng, // longitude of end route point
     rendLng, // rounded longitude of end route point
     startLatLng, // single point to drop the start & finish marker
-    routeMarker; // custom route marker for Google Map
+    routeMarker; // custom route marker
 
 // Console log
 function trace(message) {
@@ -93,21 +93,20 @@ function submitData(lat, lng) {
 var index = 0;
 function showNextRoute() {
     if (index <= 20) {
-        console.log(index);
         routeId = routeIds[index]; // routeId is a number
-        index++;
         checkRoute();
+        index++;
     }
 }
 
 // Ensure route is a loop or out and back - check that starting lat/lng and 
-// ending lat/lng are near each other (within ~110 m).
+// ending lat/lng are within ~110 meters of each other.
 function checkRoute() {
     $.getJSON('/markers', {
         route_id: routeId.toString()
-    }, function (retVal) {
+    }, function (routeData) {
         $('body').addClass('loading');
-        routePoints = retVal['points'];
+        routePoints = routeData['points'];
         startLat = routePoints[0]['lat'];
         rstartLat = roundNumber(startLat, 3);
         startLng = routePoints[0]['lng'];
@@ -117,7 +116,7 @@ function checkRoute() {
         endLng = routePoints[routePoints.length -1]['lng'];
         rendLng = roundNumber(endLng, 3);
         if (rstartLat == rendLat && rstartLng == rstartLng) {
-            renderRoute();
+            renderRoute(routeData);
         } else {
             showNextRoute();
         }
@@ -125,24 +124,30 @@ function checkRoute() {
 }
 
 // Render the route monster stomp!
-function renderRoute() {
+function renderRoute(routeData) {
     $('body').removeClass('loading');
-    map.setZoom(14);
-    var routeCoordinates = [];
-    for (var x = 0; x < routePoints.length; x++) {
-        var tempLat = routePoints[x]['lat'];
-        var tempLng = routePoints[x]['lng'];
-        tempCoordinates = new google.maps.LatLng(tempLat, tempLng);
+    // map.setZoom(14); // need to replace this to mapbox-friendly zoom
+    var routeCoordinates = []; // for geojson
+    var polylinePoints = []; // for polyline
+    for (var i = 0; i < routePoints.length; i++) {
+        var tempLat = routePoints[i]['lat'];
+        var tempLng = routePoints[i]['lng'];
+        // add as object to create geojson
+        tempCoordinates = {'lat': tempLat, 'lng': tempLng};
         routeCoordinates.push(tempCoordinates);
+        // add as list to create polyline
+        polylinePoints.push([tempLat, tempLng]);
     }
-    var routePath = new google.maps.Polyline({
-        path: routeCoordinates,
-        geodesic: true,
-        strokeColor: '#00A651',
-        strokeWeight: 8,
-        strokeOpacity: 0.5
-    });
-    routePath.setMap(map);
+    // Create geojson 
+    var geojsonMagic = GeoJSON.parse(routeCoordinates, {Point: ['lat', 'lng']});
+    var featureLayer = L.mapbox.featureLayer()
+                        .setGeoJSON(geojsonMagic)
+                        .addTo(map);
+    // Set polyline options & create  polyline
+    var polylineOptions = {
+        color: '#00A651'
+    };
+    // var polyline = L.polyline(polylinePoints, polylineOptions).addTo(map);
 
     // Hide existing banner/logo and pull up next banner/logo.
     $('#step1').hide();
