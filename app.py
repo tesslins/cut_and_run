@@ -31,11 +31,12 @@ def homepage(template):
 
 @app.route('/api')
 def get_routes():
-    '''MapMyFitness query for routes near location with parameters of location (input is 
-    zipcode) and distance (input is single distance, in miles). Minimum and 
-    maximum distance are set to +/-.5 mile of input distance, then converted to 
-    meters. API call returns json, which is passed to create_route function
-    for processing route data before entry into database.'''
+    '''UnderArmor (previously MapMyFitness) query for routes near location with 
+    parameters of location (input is zipcode) and distance (input is single 
+    distance, in miles). Minimum and maximum distance are set to +/-.5 mile of 
+    input distance, then converted to meters. API call returns json, which is 
+    passed to create_route function for processing route data before entry into 
+    database.'''
     lat = request.args.get('lat') # lat comes in as type: unicode
     lng = request.args.get('lng') # lng comes in as type: unicode
     if not lat:
