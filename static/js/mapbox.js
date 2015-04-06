@@ -63,9 +63,7 @@ function centerMap() {
 // To do: Add an error check to ensure that zipcode is actually real.
 
 function showCenterMap(err, data) {
-    // The geocoder can return an area, like a city, or a
-    // point, like an address. Here we handle both cases,
-    // by fitting the map bounds to an area or zooming to a point.
+    // centers by bounds from zipcode
     if (data.lbounds) {
         map.fitBounds(data.lbounds);
     } else if (data.latlng) {
@@ -102,10 +100,10 @@ function showNextRoute() {
 // Ensure route is a loop or out and back - check that starting lat/lng and 
 // ending lat/lng are within ~110 meters of each other.
 function checkRoute() {
+    $('body').addClass('loading');
     $.getJSON('/markers', {
         route_id: routeId.toString()
     }, function (routeData) {
-        $('body').addClass('loading');
         routePoints = routeData['points'];
         startLat = routePoints[0]['lat'];
         rstartLat = roundNumber(startLat, 3);
@@ -146,30 +144,22 @@ function renderRoute(routeData) {
     $('#step2').css("display", "block");
     $('#logo2').css("display", "block");
 
-    addMarkers();
+    addMarker();
 }
 
 // Drop maker at route start/finish after route polyline is plotted.
-function addMarkers() {
-    // startLatLng = [];
-    // startLatLng.push({'lat' : routePoints[0]['lat'], 
-    //                     'lng': routePoints[0]['lng']});
-    // var routeMarker: GeoJSON.parse(startLatLng, {Point: ['lat', 'lng']});
+function addMarker() {
     L.mapbox.featureLayer({
     type: 'Feature',
     geometry: {
         type: 'Point',
-        // coordinates here are in longitude, latitude order because
-        // x, y is the standard for GeoJSON and many formats
         coordinates: [
           routePoints[0]['lng'],
           routePoints[0]['lat']
         ]
     },
     properties: {
-        title: 'start & end',
-        // one can customize markers by adding simplestyle properties
-        // https://www.mapbox.com/guides/an-open-platform/#simplestyle
+        title: 'route start & end',
         'marker-size': 'large',
         'marker-color': '#00A651',
         'marker-symbol': 'pitch'
@@ -182,8 +172,7 @@ function zoomMarker() {
     $('#step2').hide();
     $('#logo2').hide();
     $('#logo3').css("display", "block");
-    map.setZoom(25);
-    map.panTo(routeMarker.position);
+    map.setView([routePoints[0]['lat'], routePoints[0]['lng']], 15);
 }
 
 // Helper to round latitude and longitude values for location comparison.
@@ -194,20 +183,6 @@ function roundNumber(rnum, rlength) {
 
 $(document).ready(function () {
     initialize();
-    /// Disable AJAX timer because current code has many short calls.
-        // $body = $("body");
-        // Show loading screen if Ajax call is more than 3000 milliseconds (3 sec).
-        // $(document).ajaxStart(function () {
-        //     timer = setTimeout(function () {
-        //         $body.addClass("loading");
-        //         console.log('loading');
-        //     }, 2000);
-        // });
-        // $(document).ajaxComplete(function () {
-        //     $body.removeClass("loading");
-        //     console.log('removing loading');
-        //     clearTimeout(timer);
-        // });
 
     $('input#render').bind('click', function () {
         centerMap();
