@@ -41,6 +41,7 @@ input {
     margin-left: 20px;
 }
 
+/*'Tell us where you are and how far you like to run.'*/
 #logo1 {
     position: absolute;
     height: 200px;
@@ -54,6 +55,7 @@ input {
     z-index: 2
 }
 
+/*'Tell us where you are and how far you like to run.'*/
 #step1 {
     position: absolute;
     height: 150px;
@@ -72,6 +74,7 @@ input {
     width: 100%
 }
 
+/*'Go running for what?'*/
 #logo2 {
     display: none;
     position: absolute;
@@ -87,6 +90,7 @@ input {
     z-index: 2
 }
 
+/*'Go running for what?'*/
 #step2 {
     display: none;
     position: absolute;
