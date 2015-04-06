@@ -10,23 +10,18 @@
             type='text/css'
             href='http://fonts.googleapis.com/css?family=Dosis:300,400' />
       <title>{% block title %}base{% endblock %}</title>
-      <!-- Google Maps & Places API -->
-      <script
-        type="text/javascript"
-        src="http://maps.googleapis.com/maps/api/js?libraries=places&sensor=false">
-      </script>
       <!-- Mapbox - Mapbox.js, CSS, accessToken -->
         <link href='https://api.tiles.mapbox.com/mapbox.js/v2.1.5/mapbox.css' rel='stylesheet' />
         <script src='https://api.tiles.mapbox.com/mapbox.js/v2.1.5/mapbox.js'></script>
         <script>
           L.mapbox.accessToken = 'pk.eyJ1IjoidGVzc2xpbnMiLCJhIjoiSGNpcE5uVSJ9.kHgz12zmSHH04rnVwRf2YQ';
         </script>
+      <!-- geojson library -->
+      <script src="js/geojson.min.js"></script>
       <!-- jQuery--> 
       <script
         src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js">
       </script>
-      <script type='text/javascript' src="js/initialize_map.js"></script>
-      <script type='text/javascript' src="js/mapbox.js"></script>
       {% endblock %}
     </head>
     <body>
@@ -34,5 +29,6 @@
       {% endblock %}
       <div id="map-canvas"></div>
       <div class="modal"></div>
+      <script type='text/javascript' src="js/mapbox.js"></script>
     </body>
   </html>
