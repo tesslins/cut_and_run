@@ -5,6 +5,7 @@ from flask.ext.mobility.decorators import mobile_template
 import requests
 import requests.auth
 import json
+import geojson
 import os
 import pdb #call with pdb.set_trace()
 
@@ -89,7 +90,7 @@ def create_route_ids_list(routes_json):
 
 @app.route('/markers')
 def get_route_points():
-    ''' Second API call to get points for each route. '''
+    ''' Second API call to get points for each route and convert to geojson. '''
     route = request.args.get('route_id')
     print route
     print type(route)
@@ -98,8 +99,8 @@ def get_route_points():
     response = requests.get(url=mapmyapi_url, verify=False,
                     headers={'api-key': MAPMYAPI_KEY, 'authorization': 'Bearer %s' % access_token['access_token']})
     print 'Made single route id API call.'
-    retVal = response.json()
-    return json.dumps(retVal)
+    route_data = response.json()
+    return json.dumps(route_data)
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
