@@ -6,11 +6,9 @@ route data in a user-friendly interface, built from the premise *like Tinder...f
 ## Overview
 
 * Single-page app built on Python (Flask framework) and Javascript
-* Basemap and route plotting from Google Maps JavaScript API v3 @ https://developers.google.com/maps/documentation/javascript/
-* Route data from Under Armour API (formerly MapMyFitness) with over 60 million routes worldwide @ https://developer.underarmour.com/
-* Route data from each API call stored in Postgres database; database interaction
-with SQLAlchemy [deprecated] 
-
+* Basemap and other mapping services from Mapbox @ https://www.mapbox.com/developers/api/
+* Route data from Under Armour API (formerly MapMyFitness) @ https://developer.underarmour.com/
+* [deprecated] Route data from each API call stored in Postgres database; database interaction with SQLAlchemy 
 
 ## Dependencies
 
@@ -20,7 +18,7 @@ Available in [requirements.txt](requirements.txt).
 
 1.	Clone repo
 	```
-	git clone https://github.com/tesslins/cut_and_run.git
+	git clone https://github.com/tesslins/cut_and_run.git --branch mapbox
 	cd cut_and_run
 	```
 2.	Create virtual environment
@@ -57,21 +55,17 @@ Available in [requirements.txt](requirements.txt).
 
 ## Development
 
-Each MapMyFitness API call (limit: "reasonable request volume") queries by location and distance from an existing collection of over 60 million routes worldwide Zipcode and route distance for the query are entered by the user on the starting screen; after which the location is encoded to latitude and longitude by the Google Geocoding API (limit: 2,500 requests per 24 hour period; 10 requests per second). Distance range used is +/- .5 mile from the user-specified distance.
+Each MapMyFitness API call (limit: "reasonable request volume") queries by location and distance from an existing collection of over 60 million routes worldwide. Zipcode and route distance for the query are entered by the user on the starting screen, after which the location is encoded to a latitude and longitude bounding box by the Mapbox Geocoder API. Distance range used is +/- .5 mile from the user-specified distance.
 
-Additional route calculation displays only those routes with start and end points fewer than 500 feet (110 m) apart are, accounting for both loops or out-and-back routes while discounting one-way routes that would return the user to a location far from the starting point without including the return milage. 
+Additional route processing displays only those routes with start and end points fewer than 110m (360 feet) apart, accounting for both loops or out-and-back routes while skipping over one-way routes that would return the user to a location far from the starting point without including the return milage. 
+
+Routes are displayed as a polyline and the start point is marked with a single marker, set as a geojson from first point in the list.
 
 ## Design
 
-The development and design of this application came from an idea on a run (the
-general source of all best & worst life ideas). A friend and I were talking
-about our general lack of engagement with fitness/fitness tracking apps for
-runners (think Strava, MapMyRun) due to uninspriring and unnecessarily complication designs, as well as a general use mindset geared toward a very specific athlete.
+The development and design of this application came from an idea on a run (the general source of all best & worst life ideas). A friend and I were talking about our general lack of engagement with fitness/fitness tracking apps for runners (think Strava, MapMyRun) due to uninspriring and unnecessarily complication designs, as well as a general use mindset geared toward a very specific athlete.
 
-Consequently, I designed Cut & Run to be simple, straightforward, user-friendly,
-and inclusive way to access and utilitze the huge volumes of availble fitness
-data. It is about getting out and actually running, and can be used for
-reference in a new city or for cruising new routes in your neighborhood.
+Consequently, I designed Cut & Run to be simple, straightforward, user-friendly, and inclusive way to access and utilitze the huge volumes of availble fitness data. It is about getting out and actually running, and can be used for reference in a new city or for cruising new routes in your neighborhood.
 
 Inspired by the swipe-through design of many popular mobile apps, the routes
 output by a location/distance search are displayed one at a time, and the user
@@ -98,12 +92,15 @@ returned from API call are stored in database to minimize future loading times.
 *Route choice screen*
 ![Route choice screen](etc/yes_to_route_screen.png "Route choice screen")
 
-*Mobile starting screen*
+*Mobile starting screen (using Google Maps)*
 
 <img src="etc/mobile_screen.png" width="320px" />
 
 ## Future steps forward
 
+* Additional map design customization
+* Increased error feedback to users
 * Full adaptive mobile site with swipe-through capability to move through routes
 * Ability to receive routes by e-mail and share route information on social media
+* Speed optimization (possibly make API calls in the background?)
 
