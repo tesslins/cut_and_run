@@ -164,7 +164,8 @@ function addMarker() {
         'marker-color': '#00A651',
         'marker-symbol': 'pitch'
     }
-}).addTo(map);
+    }).addTo(map);
+    map.setView([routePoints[0]['lat'], routePoints[0]['lng']], 14);
 }
 
 // Map zoom and center on routeMarker. Runs on click of yes button.
@@ -172,7 +173,7 @@ function zoomMarker() {
     $('#step2').hide();
     $('#logo2').hide();
     $('#logo3').css("display", "block");
-    map.setView([routePoints[0]['lat'], routePoints[0]['lng']], 15);
+    map.setView([routePoints[0]['lat'], routePoints[0]['lng']], 16);
 }
 
 // Helper to round latitude and longitude values for location comparison.
