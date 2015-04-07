@@ -34,7 +34,7 @@ function initialize() {
     }
 
     // L.mapbox.map(element, id|url|tilejson, options(optional))
-    map = L.mapbox.map('map-canvas', 'examples.map-i86l3621')
+    map = L.mapbox.map('map-canvas', 'tesslins.lm0pceg1')
         .setView([lat, lng], 10);
 }
 
@@ -47,7 +47,7 @@ function clearLayer() {
 // Recreate map between routes.
 // ?? Must be a better way to do this, try to add & remove layers?
 function reinitialize() {
-    map = L.mapbox.map('map-canvas', 'examples.map-i86l3621')
+    map = L.mapbox.map('map-canvas', 'tesslins.lm0pceg1')
         .setView([lat, lng], 10);
     showNextRoute();
 }
@@ -134,7 +134,8 @@ function renderRoute(routeData) {
     }
     // Set polyline options & create  polyline
     var polylineOptions = {
-        color: '#00A651'
+        color: '#009444',
+        opacity: .85
     };
     var polyline = L.polyline(polylinePoints, polylineOptions).addTo(map);
 
