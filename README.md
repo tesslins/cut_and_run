@@ -79,9 +79,9 @@ Additional highlights of the site design are:
 * Simple interface with minimal input requirement from the user (location and distance)
 * Custom loading screen display during initial API call for routes. All routes
 returned from API call are stored in database to minimize future loading times.
-* Adaptive styling for mobile use [in progress]
+* [in progress] Adaptive styling for mobile use 
 
-## Screenshots
+## Screenshots (screenshots show app with Google Maps API)
 
 *Starting screen*
 ![Starting screen](etc/starting_screen.png "Starting screen")
