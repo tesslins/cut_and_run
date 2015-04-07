@@ -5,6 +5,8 @@ route data in a user-friendly interface, built from the premise *like Tinder...f
 
 ## Overview
 
+*** Note: See branch Mapbox for identical app on Mapbox API in place of Google Maps ***
+
 * Single-page app built on Python (Flask framework) and Javascript
 * Basemap and route plotting from Google Maps JavaScript API v3 @ https://developers.google.com/maps/documentation/javascript/
 * Route data from Under Armour API (formerly MapMyFitness) with over 60 million routes worldwide @ https://developer.underarmour.com/
