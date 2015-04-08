@@ -5,7 +5,8 @@ route data in a user-friendly interface, built from the premise *like Tinder...f
 
 ## Overview
 
-*** Note: See branch Mapbox for identical app on Mapbox API in place of Google Maps ***
+*** Note #1: This app is currently live at https://cut-and-run.herokuapp.com/. (Be a few seconds of patient on the first load!) ***
+*** Note #2: This branch uses Google Maps API. Please see Mapbox branch for identical functionality using Mapbox in place of Google Maps ***
 
 * Single-page app built on Python (Flask framework) and Javascript
 * Basemap and route plotting from Google Maps JavaScript API v3 @ https://developers.google.com/maps/documentation/javascript/
