@@ -3,7 +3,7 @@
 A single-page web app to enable users to visually page through local running
 route data in a user-friendly interface, built from the premise *like Tinder...for running routes*. 
 
-Note: Check out this app live @ https://cut-and-run.herokuapp.com/. (Be a few seconds of patient on the first load...)
+Check out this app live @ https://cut-and-run.herokuapp.com/. (Be a few seconds of patient on the first load...)
 
 ## Overview
 
