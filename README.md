@@ -19,36 +19,48 @@ Available in [requirements.txt](requirements.txt).
 1.	Clone repo
 	```
 	git clone https://github.com/tesslins/cut_and_run.git --branch mapbox
-	cd cut_and_run
 	```
-2.	Create virtual environment
+2. Move into directory.
+	```
+	cd cut_and_run/
+	```
+3.	Create virtual environment
 	```
 	virtualenv env
 	```
-3.	Activate virtual environment
+4.	Activate virtual environment
 	```
 	source env/bin/activate
 	```
-4. Install dependencies
+5. Install dependencies
 	```
 	pip install -r requirements.txt
 	```
-5. Register at https://developer.underarmour.com/member/register to get a key and additional access token, secret, etc.
+6. Set up to use Under Armour API: 
 
-6. Set key as environmental variable.
+	a. Register at https://developer.underarmour.com/member/register to get a key and secret.
+
+	b. Set key (Under Armour calls this Client ID) as environmental variable.
 	```
-	export MAPMYAPI_KEY=key (replace key with actual key!)
+	export MAPMYAPI_KEY=key ```(replace key with actual key!)
+	
+	c. Set secret (Under Armour calls this Client Secret) as environmental variable.
 	```
-7. Set secret as environmental variable.
-	```
-	export MAPMYAPI_SECRET=secret (replace secret with actual secret!)
-	```
-8. Run oauth2_test.py to generate access token.
+	export MAPMYAPI_SECRET=secret ```(replace secret with actual secret!)
+	
+	d. Run oauth2_test.py to generate access token.
 	```
 	python oauth2_test.py 
 	```
-9. Add access token to mapmyfitness_oauth2_clientcredentials.
-10. Ready to run app.
+	e. Complete access token in app.py & don't forget to uncomment!
+
+7. Set up to use Mapbox API:
+
+	a. Follow instructions at https://www.mapbox.com/help/create-api-access-token/
+
+	b. Copy & paste access token into the head of base.html, line 17 (in the script listing L.mapbox.accessToken).
+
+8. Ready to run app.
 	```
 	python app.py
 	```

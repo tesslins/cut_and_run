@@ -14,13 +14,16 @@ app = Flask(__name__, static_url_path='')
 Mobility(app)
 
 # API key
-MAPMYAPI_KEY = '62xb5fhesk3gb3fj3yttw2mh4yn54krt'
-MAPMYAPI_SECRET = 'JJYKeRZXEFvvQ8uTzCrZCQjkwqv6TuphxFHmjcsBwu4'
+# Under Armour calls this Client ID
+MAPMYAPI_KEY = os.environ['MAPMYAPI_KEY']
+# Under Armour calls this Client Secret
+MAPMYAPI_SECRET = os.environ['MAPMYAPI_SECRET']
 
-access_token = {u'access_token': u'a26d95f8560d358f3c2dd39dff7a2d27eb29f50e', 
-                u'token_type': u'Bearer', 
-                u'expires_in': 2148789, 
-                u'scope': u'read'}
+# COMPLETE ACCESS TOKEN & EXPIRATION HERE:
+# access_token = {u'access_token': u'--------------------------', 
+#                 u'token_type': u'Bearer', 
+#                 u'expires_in': -------, 
+#                 u'scope': u'read'}
 
 # Routes
 @app.route('/')
