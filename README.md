@@ -23,7 +23,6 @@ Available in [requirements.txt](requirements.txt).
 1.	Clone repo
 	```
 	git clone https://github.com/tesslins/cut_and_run.git
-	cd cut_and_run
 	```
 2.	Create virtual environment
 	```
